@@ -1,0 +1,11 @@
+npm run build 报 TypeScript 编译错误，一共13个：
+
+1. ImportDialog.tsx:118 行，errors 数组类型不兼容，string[] 不能赋值给 ImportError[]
+2. ImportDialog.tsx:192、209 行，找不到 Space 组件（可能是没 import 或用了不存在的组件名）
+3. ImportDialog.tsx:205 行，按钮的 as 属性不存在（可能是旧版 API）
+4. OrganizationTree.tsx:65 行，Department 类型缺少 key 属性
+5. UserList.tsx:54 行，fixed 属性类型错误，string 不能赋值给 FixedType
+6. UserList.tsx:243、285、292、312、319、326 行，多个回调参数有隐式 any 类型
+7. helpers.ts:175 行，参数类型不匹配
+
+总共13个类型错误导致构建失败，页面没法跑起来看效果。
