@@ -1,0 +1,1 @@
+redis_mock.go:425 还有一个编译错误：redis.NewDurationCmd(ctx, nil) 的第二个参数 nil 不能作为 time.Duration 值传入，需要把 nil 改成 time.Duration 类型的默认值或者直接用 time.Duration()。

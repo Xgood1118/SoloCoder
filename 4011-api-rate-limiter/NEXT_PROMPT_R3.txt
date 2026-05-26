@@ -1,0 +1,11 @@
+TestConfigManagerSetAndGet 运行时 panic：
+```
+panic: interface conversion: interface {} is map[string]interface {}, not string
+api-rate-limiter/internal/ratelimiter.(*MockRedisClient).HSet
+api-rate-limiter/internal/ratelimiter.(*ConfigManager).SetConfig
+api-rate-limiter/internal/ratelimiter.TestConfigManagerSetAndGet
+```
+
+config.go:151 调用 `cm.client.HSet(context.Background(), key, configMap)`，configMap 是 `map[string]interface{}`，传入 variadic `...interface{}` 时作为单个 map 值传入（不是展开），mock 的 HSet 里 `values[i].(string)` 对 key 做类型断言时报 panic。
+
+TestConfigManagerSetAndGet、TestConfigManagerDelete、TestConfigManagerInvalidateCache、TestConfigManagerSlidingWindowConfig、TestConfigTTL 这几个测试都调用了 SetConfig，全部 panic。

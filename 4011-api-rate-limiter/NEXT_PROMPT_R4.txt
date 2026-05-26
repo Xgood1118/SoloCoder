@@ -1,0 +1,7 @@
+TestMiddlewareTokenBucket 发请求超过限流阈值后返回 200，预期返回 429 Too Many Requests，Retry-After 头也为空。同样的问题出现在 TestMiddlewareUserIDPriority、TestMiddlewareUserIDFallbackToIP、TestMiddleware429ResponseBody、TestMiddlewarePerPathConfig，都是限流触发后仍返回 200。
+
+TestTokenBucketAllow 第10个请求应该拒绝，但实际全部通过（config.Enabled 没被正确读取）。
+
+TestParseConfigAutoFill 的 config.Enabled 断言失败（assert.True 返回 false），enabled 字段解析值和预期不符。
+
+config.go:151 的 configMap 是 map[string]interface{}，HSet 签名是 HSet(ctx, key, values ...interface{})，map 作为单个 interface{} 值传入而不是展开成 key1, val1, key2, val2。需要先 flatten 成 pairs 再传。
