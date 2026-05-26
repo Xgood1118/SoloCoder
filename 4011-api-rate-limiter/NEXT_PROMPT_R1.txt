@@ -1,9 +1,0 @@
-npm run build 编译报错，一共6个：
-
-queue.go:289 引用了不存在的 redisZRangeBy 函数。
-
-redis_mock.go:425 调 NewDurationCmd 参数不够，redis_mock.go:440 调 NewScanCmd 参数不够，redis_mock.go:460 调 SetVal 参数类型不匹配。
-
-sliding_window.go:94 和 sliding_window.go:98 的 Lua 脚本执行结果 result 没有做类型断言，直接赋值会 panic。
-
-token_bucket.go:87 和 token_bucket.go:91 同理，result 赋值需要类型断言才能通过编译。
