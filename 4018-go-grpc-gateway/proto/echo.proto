@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package echo;
+
+option go_package = "grpc-gateway-example/proto/echo";
+
+// Echo 示例服务：演示普通 / 服务端流 / 客户端流 / 双向流 四种 RPC
+service EchoService {
+  // 普通 Unary：HTTP POST /v1/echo
+  rpc Echo(EchoRequest) returns (EchoResponse);
+
+  // 服务端流：HTTP GET  /v1/echo/stream?message=hi&count=5
+  rpc ServerStream(EchoRequest) returns (stream EchoResponse);
+
+  // 客户端流：HTTP POST /v1/echo/collect  (NDJSON 逐行 JSON)
+  rpc ClientStream(stream EchoRequest) returns (EchoResponse);
+
+  // 双向流：HTTP POST /v1/echo/bidi       (NDJSON 逐行 JSON，逐行返回)
+  rpc BidiStream(stream EchoRequest) returns (stream EchoResponse);
+}
+
+message EchoRequest {
+  string message = 1;
+}
+
+message EchoResponse {
+  string message = 1;
+  int64  seq     = 2;
+}

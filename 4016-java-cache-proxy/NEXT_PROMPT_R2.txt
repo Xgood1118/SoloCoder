@@ -1,0 +1,1 @@
+pom.xml 编译还是过不了，错误和上轮完全一样——还是缺 spring-boot-starter-web，UserController 里的 @GetMapping/@PutMapping/@DeleteMapping/@PathVariable/@RequestParam/@RequestBody 全部找不到。pom.xml 这次根本没动，spring-boot-starter-web 依赖还是没有加进去。

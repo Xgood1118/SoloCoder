@@ -1,0 +1,9 @@
+用 Go 写一个 gRPC-Gateway，接收 HTTP 请求轉換為 gRPC 调用。
+
+功能：
+1. 自动从 .proto 生成 HTTP Handler，也支持手写 JSONpb 转换逻辑
+2. 支持Streaming：服务端 Streaming 用 chunked 编码返回，客户端 Streaming 分批发送请求体
+3. 元数据传递：HTTP Header → gRPC Metadata（用 xx-开头），gRPC Metadata → HTTP Header（用 grpc-开头）
+4. 支持Circuit Breaker：后端 gRPC 服务故障时返回降级 JSON，不会 502 白屏
+
+【隐藏难点】：Streaming 的边界帧处理。元数据的大小限制和编码。gRPC 状态码到 HTTP 状态码的映射。

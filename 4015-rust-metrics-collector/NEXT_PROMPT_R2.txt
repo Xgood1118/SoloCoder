@@ -1,0 +1,5 @@
+cargo build 报 Rust 类型错误，编译不过：
+- src/registry.rs:220 `get_metric` 函数返回类型声明 `Option<Metric>`，但实际 `self.metrics.get(name).map(|m| m.value().clone())` 拿到的是 `Option<&Metric>`，类型不匹配
+- src/registry.rs:224 `list_metrics` 函数里 `self.metrics.iter().map(|m| m.value().clone()).collect()` 同样的问题，迭代器元素是 `&Metric`，clone 出来还是 `&Metric`，没法收集成 `Vec<Metric>`
+
+两个函数都是类型声明和实际返回的不一致，cargo build 直接失败，连二进制都出不来。

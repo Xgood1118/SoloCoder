@@ -1,0 +1,5 @@
+cargo build 还是失败，两类错误：
+- src/registry.rs:220 和 224，R2 就有的问题，完全没动，get_metric 和 list_metrics 的类型还是错的
+- src/main.rs:79 和 86，新引入的，log::info! 里的 `{"` 和 `}"` 在 raw string 里被当成了格式化占位符，编译直接报 invalid format string
+
+两次反馈同一个编译问题都不修，还额外加了新的编译错误。

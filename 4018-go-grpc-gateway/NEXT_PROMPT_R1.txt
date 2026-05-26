@@ -1,0 +1,1 @@
+go build 过不了，三个编译错误：gateway/jsonpb.go:33 字段名 Marshal 和同名的方法冲突，gateway/jsonpb.go:38 字段名 Unmarshal 和同名的方法冲突，server/echo_server.go:99 无法将 *flakyEchoServer 赋值给 *echoServer。

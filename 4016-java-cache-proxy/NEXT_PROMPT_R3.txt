@@ -1,0 +1,1 @@
+应用启动就崩了。Tomcat 绑定了 8100，但 Spring 上下文初始化时因为 Redis 连不上整个崩掉：RedisConnectionFailureException: Unable to connect to localhost/127.0.0.1:6379，连不上 Redis 应用就起不来，CacheProxyAutoConfiguration 里的 RedisMessageListenerContainer 初始化失败。
