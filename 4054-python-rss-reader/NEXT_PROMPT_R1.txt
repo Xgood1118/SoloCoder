@@ -1,0 +1,1 @@
+feeds add 功能报错：添加订阅源时报错 Error binding parameter 5: type 'dict' is not supported。看 feed_info 包含了 dict 类型传给 SQL 绑定失败。几个能用的功能：feeds list、articles list、search、stats 都正常，但 add 不了新源就没法用。

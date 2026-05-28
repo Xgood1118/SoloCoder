@@ -1,0 +1,1 @@
+python report_aggregator.py 一运行就崩溃，报 TypeError: '<' not supported between instances of 'int' and 'str'。检查并修复一下。
