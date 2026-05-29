@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "required": ["items"],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/nonexistent"},
+      "minItems": 1
+    }
+  },
+  "definitions": {
+    "item": {
+      "type": "object",
+      "required": ["id"]
+    }
+  }
+}

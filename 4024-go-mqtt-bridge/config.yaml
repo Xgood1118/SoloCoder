@@ -1,0 +1,29 @@
+mqtt:
+  broker: "tcp://localhost:1883"
+  client_id: "mqtt-bridge-01"
+  username: ""
+  password: ""
+
+subscriptions:
+  - topic: "sensors/#"
+    qos: 1
+    regex_filter: ""
+  - topic: "events/+/status"
+    qos: 2
+    regex_filter: '"level"\s*:\s*\d+'
+
+webhook:
+  url: "https://example.com/api/ingest"
+  method: "POST"
+  timeout_seconds: 10
+  max_retries: 5
+  base_backoff_seconds: 1
+  max_backoff_seconds: 60
+  headers:
+    X-Source: "mqtt-bridge"
+
+converter:
+  template: "{topic: topic, data: payload}"
+
+deduplicator:
+  window_seconds: 5

@@ -1,0 +1,38 @@
+{
+  "round": [
+    "第二轮"
+  ],
+  "分支/文件名": "4074-python-json-tool",
+  "满意": [
+    "不满意"
+  ],
+  "不满意的bug": [
+    "$.items[0]|$.items[-1] 返回None而非[1,5]",
+    "$[*]|$.name 返回None而非['a','b']"
+  ],
+  "满意环节": [
+    "transformer compute float eval已修复"
+  ],
+  "初始是否可运行": [
+    "可运行"
+  ],
+  "业务类型": [
+    "CLI工具/数据处理"
+  ],
+  "修改范围": [
+    "本模块文件"
+  ],
+  "复现步骤": [
+    "python3 jsonpath.py测试query函数"
+  ],
+  "缺陷": [
+    "不满意：2个未修复"
+  ],
+  "bug分析": "Bug 2: jsonpath.py query()每个pipe segment都从原始数据重新开始，导致A的结果被丢弃\nBug 3: jsonpath.py _apply_steps() ROOT token无条件重置result=data，覆盖前一个segment传递的列表",
+  "是否可复现": [
+    "可复现"
+  ],
+  "修改文件": [
+    "jsonpath.py"
+  ]
+}

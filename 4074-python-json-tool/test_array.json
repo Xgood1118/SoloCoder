@@ -1,0 +1,7 @@
+[
+  {"name": "Alice", "age": 30, "region": "US", "price": 100.0},
+  {"name": "Bob", "age": 25, "region": "EU", "price": 200.0},
+  {"name": "Charlie", "age": 35, "region": "US", "price": 150.0},
+  {"name": "Diana", "age": 28, "region": null, "price": 300.0},
+  {"name": "Eve", "price": 50.0}
+]

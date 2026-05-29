@@ -1,0 +1,13 @@
+{
+  "users": [
+    {"name": "Alice", "age": 30, "region": "US", "price": 100.0, "tags": ["admin", "user"]},
+    {"name": "Bob", "age": 25, "region": "EU", "price": 200.0, "tags": ["user"]},
+    {"name": "Charlie", "age": 35, "region": "US", "price": 150.0, "tags": ["user", "mod"]},
+    {"name": "Diana", "age": 28, "region": null, "price": 300.0, "tags": ["user"]},
+    {"name": "Eve", "price": 50.0, "tags": ["user"]}
+  ],
+  "metadata": {
+    "version": "1.0",
+    "count": 5
+  }
+}

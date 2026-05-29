@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "required": ["name", "status"],
+  "properties": {
+    "name": {"type": "string"},
+    "status": {"type": "string", "enum": ["active", "inactive", "pending"]},
+    "email": {"type": "string", "pattern": "^[^@]+@[^@]+\\.[^@]+$"},
+    "score": {"type": "number", "minimum": 0, "maximum": 100},
+    "profile": {
+      "type": "object",
+      "properties": {
+        "level": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

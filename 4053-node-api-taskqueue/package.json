@@ -1,0 +1,15 @@
+{
+  "name": "taskqueue-api",
+  "version": "1.0.0",
+  "description": "Enterprise Task Queue API with dependency management, priority scheduling, resource locks, batch operations and state machine",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "express": "^4.21.0",
+    "uuid": "^10.0.0"
+  }
+}

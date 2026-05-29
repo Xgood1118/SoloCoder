@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="UnitTests" tests="6" skipped="0" failures="2" errors="0" time="0.6">
+    <testcase classname="tests.test_math" name="test_add[1+2=3]" time="0.1"/>
+    <testcase classname="tests.test_math" name="test_add[4+5=9]" time="0.1"/>
+    <testcase classname="tests.test_math" name="test_multiply" time="0.1">
+        <failure message="AssertionError: expected 6 got 5">
+Traceback (most recent call last):
+  File "tests/test_math.py", line 15, in test_multiply
+    assert multiply(2, 3) == 6
+AssertionError: expected 6 got 5
+        </failure>
+    </testcase>
+    <testcase classname="tests.test_math" name="test_divide" time="0.1"/>
+    <testcase classname="tests.test_string" name="test_concat" time="0.1"/>
+    <testcase classname="tests.test_api" name="test_login_endpoint" time="0.1">
+        <failure message="Connection refused">
+Traceback (most recent call last):
+  File "tests/test_api.py", line 23, in test_login_endpoint
+    response = requests.post('/api/login')
+ConnectionRefusedError: Connection refused
+        </failure>
+    </testcase>
+</testsuite>

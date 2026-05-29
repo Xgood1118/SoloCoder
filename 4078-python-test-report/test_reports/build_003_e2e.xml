@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="E2ETests" tests="3" skipped="0" failures="1" errors="0" time="10.0">
+        <testcase classname="tests.test_login" name="test_user_login" time="3.0"/>
+        <testcase classname="tests.test_login" name="test_user_login[chrome]" time="3.0">
+            <failure message="Timeout waiting for element">
+Traceback (most recent call last):
+  File "tests/test_login.py", line 45, in test_user_login
+    WebDriverWait(driver, 10).until(...)
+TimeoutException: Timeout waiting for element
+        </failure>
+        </testcase>
+        <testcase classname="tests.test_checkout" name="test_add_to_cart" time="4.0"/>
+    </testsuite>
+</testsuites>
