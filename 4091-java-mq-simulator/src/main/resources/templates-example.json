@@ -1,0 +1,58 @@
+{
+  "templates": [
+    {
+      "name": "订单创建",
+      "category": "order",
+      "description": "订单创建成功通知",
+      "defaultTopic": "order.created",
+      "format": "JSON",
+      "content": "{\n  \"orderId\": \"${orderId}\",\n  \"userId\": \"${userId}\",\n  \"totalAmount\": ${totalAmount|99.99},\n  \"status\": \"CREATED\",\n  \"createdAt\": ${timestamp},\n  \"items\": [\n    {\n      \"productId\": \"P001\",\n      \"productName\": \"测试商品\",\n      \"quantity\": 1,\n      \"price\": 99.99\n    }\n  ]\n}",
+      "placeholders": {
+        "orderId": "订单ID，默认UUID",
+        "userId": "用户ID，默认U001",
+        "totalAmount": "订单金额，默认99.99",
+        "timestamp": "时间戳，默认当前时间"
+      },
+      "headers": {
+        "eventType": "ORDER_CREATED",
+        "source": "mq-simulator"
+      }
+    },
+    {
+      "name": "用户登录",
+      "category": "user",
+      "description": "用户登录成功通知",
+      "defaultTopic": "user.login",
+      "format": "JSON",
+      "content": "{\n  \"userId\": \"${userId}\",\n  \"username\": \"${username|testuser}\",\n  \"loginTime\": ${timestamp},\n  \"ipAddress\": \"${ipAddress|127.0.0.1}\",\n  \"userAgent\": \"${userAgent|Mozilla/5.0}\",\n  \"loginType\": \"PASSWORD\",\n  \"success\": true\n}",
+      "placeholders": {
+        "userId": "用户ID",
+        "username": "用户名",
+        "ipAddress": "登录IP",
+        "timestamp": "登录时间戳"
+      },
+      "headers": {
+        "eventType": "USER_LOGIN",
+        "source": "mq-simulator"
+      }
+    },
+    {
+      "name": "支付回调",
+      "category": "payment",
+      "description": "支付完成回调通知",
+      "defaultTopic": "payment.callback",
+      "format": "JSON",
+      "content": "{\n  \"paymentId\": \"${paymentId}\",\n  \"orderId\": \"${orderId}\",\n  \"amount\": ${amount|99.99},\n  \"currency\": \"${currency|CNY}\",\n  \"status\": \"SUCCESS\",\n  \"paymentMethod\": \"${paymentMethod|ALIPAY}\",\n  \"paidAt\": ${timestamp},\n  \"transactionId\": \"${transactionId|TXN000001}\"\n}",
+      "placeholders": {
+        "paymentId": "支付单号",
+        "orderId": "关联订单号",
+        "amount": "支付金额",
+        "timestamp": "支付时间戳"
+      },
+      "headers": {
+        "eventType": "PAYMENT_CALLBACK",
+        "source": "mq-simulator"
+      }
+    }
+  ]
+}

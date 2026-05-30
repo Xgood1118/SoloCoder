@@ -1,0 +1,24 @@
+[package]
+name = "parse_combinator"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.70"
+
+[lib]
+name = "parse_combinator"
+path = "src/lib.rs"
+
+[features]
+default = ["std"]
+std = []
+unicode = []
+
+[dependencies]
+
+[dev-dependencies]
+parse_combinator = { path = ".", features = ["std"] }
+criterion = "0.5"
+
+[[bench]]
+name = "benchmarks"
+harness = false

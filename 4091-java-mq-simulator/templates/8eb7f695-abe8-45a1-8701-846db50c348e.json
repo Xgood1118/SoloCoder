@@ -1,0 +1,39 @@
+{
+  "id" : "8eb7f695-abe8-45a1-8701-846db50c348e",
+  "name" : "订单创建",
+  "description" : "订单创建事件消息模板",
+  "category" : "order",
+  "mqType" : "KAFKA",
+  "format" : "JSON",
+  "defaultTopic" : "order.created",
+  "defaultExchange" : null,
+  "defaultRoutingKey" : null,
+  "defaultQueue" : null,
+  "content" : "{\n  \"orderId\": \"${orderId}\",\n  \"userId\": \"${userId}\",\n  \"productId\": \"${productId}\",\n  \"quantity\": ${quantity},\n  \"totalAmount\": ${totalAmount},\n  \"status\": \"CREATED\",\n  \"createdAt\": \"${timestamp}\",\n  \"shippingAddress\": {\n    \"name\": \"${shippingName}\",\n    \"phone\": \"${shippingPhone}\",\n    \"address\": \"${shippingAddress}\"\n  }\n}",
+  "placeholders" : {
+    "totalAmount" : "订单总金额",
+    "quantity" : "购买数量",
+    "productId" : "商品ID",
+    "shippingName" : "收货人姓名",
+    "orderId" : "订单ID",
+    "shippingAddress" : "收货地址",
+    "shippingPhone" : "收货人电话",
+    "userId" : "用户ID",
+    "timestamp" : "创建时间戳"
+  },
+  "defaultHeaders" : { },
+  "sampleValues" : {
+    "totalAmount" : "299.00",
+    "quantity" : "2",
+    "productId" : "PRD2001",
+    "shippingName" : "张三",
+    "orderId" : "ORD1780102705163",
+    "shippingAddress" : "北京市朝阳区xxx街道",
+    "shippingPhone" : "13800138000",
+    "userId" : "USR10001"
+  },
+  "createdAt" : [ 2026, 5, 30, 8, 58, 25, 163511800 ],
+  "updatedAt" : [ 2026, 5, 30, 8, 58, 25, 163511800 ],
+  "createdBy" : null,
+  "version" : "1.0"
+}

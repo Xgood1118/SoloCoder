@@ -1,0 +1,46 @@
+{
+  "type": "record",
+  "name": "UserLogin",
+  "namespace": "com.mq.simulator.avro",
+  "fields": [
+    {
+      "name": "userId",
+      "type": "string",
+      "doc": "用户ID"
+    },
+    {
+      "name": "username",
+      "type": "string",
+      "doc": "用户名"
+    },
+    {
+      "name": "loginTime",
+      "type": "long",
+      "doc": "登录时间戳"
+    },
+    {
+      "name": "ipAddress",
+      "type": "string",
+      "doc": "登录IP地址"
+    },
+    {
+      "name": "userAgent",
+      "type": "string",
+      "doc": "用户代理"
+    },
+    {
+      "name": "loginType",
+      "type": {
+        "type": "enum",
+        "name": "LoginType",
+        "symbols": ["PASSWORD", "SMS", "OAUTH", "QRCODE"]
+      },
+      "doc": "登录类型"
+    },
+    {
+      "name": "success",
+      "type": "boolean",
+      "doc": "是否登录成功"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Test coverage
+coverage/
+lcov.info
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Editor directories
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.cache/
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+# Secrets
+secrets.json
+credentials.json
+*.pem
+*.key
+
+# Temp files
+tmp/
+temp/
+tmp-*/
+*.tmp
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# Metrics data files
+metrics-data/
+metrics-storage/
+data/
+output/
+*.prom
+*.rrd
+
+# OS
+Thumbs.db
+*~

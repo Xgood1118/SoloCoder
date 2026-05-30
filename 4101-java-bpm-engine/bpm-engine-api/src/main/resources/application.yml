@@ -1,0 +1,72 @@
+server:
+  port: 8141
+
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/bpm_engine?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/bpm_engine
+#    username: postgres
+#    password: postgres
+#    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    open-in-view: false
+
+  sql:
+    init:
+      mode: never
+
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
+#    virtual-host: /
+
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
+#      password:
+#      database: 0
+#      timeout: 5000
+
+bpm:
+  engine:
+    distributed:
+      lock:
+        type: database
+    expression:
+      sandbox:
+        enabled: true
+        max-execution-time: 5000
+        allowed-classes:
+          - java.lang.Math
+          - java.lang.String
+
+logging:
+  level:
+    root: INFO
+    com.bpm.engine: DEBUG
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN

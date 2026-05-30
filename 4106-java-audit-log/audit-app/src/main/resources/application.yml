@@ -1,0 +1,187 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: audit-log-system
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/audit_db?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  data:
+    elasticsearch:
+      uris: http://localhost:9200
+      username: elastic
+      password: changeme
+      connect-timeout: 5s
+      read-timeout: 30s
+
+    mongodb:
+      uri: mongodb://localhost:27017/audit_db
+      auto-index-creation: true
+
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      database: 0
+      timeout: 5s
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 10
+          min-idle: 5
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      simple:
+        prefetch: 10
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 3
+          max-interval: 10000
+          multiplier: 2
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  jackson:
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false
+
+audit:
+  timezone: Asia/Shanghai
+
+  storage:
+    elasticsearch:
+      enabled: true
+    clickhouse:
+      enabled: true
+      jdbc:
+        url: jdbc:ch://localhost:8123/default
+        driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
+    mongodb:
+      enabled: true
+
+  mask:
+    enabled: true
+    rules:
+      ID_CARD:
+        field-name: idCard
+        strategy: ID_CARD
+        keep-prefix: 3
+        keep-suffix: 4
+        replace-char: '*'
+        enabled: true
+      BANK_CARD:
+        field-name: bankCard
+        strategy: BANK_CARD
+        keep-prefix: 4
+        keep-suffix: 4
+        replace-char: '*'
+        enabled: true
+      PHONE:
+        field-name: phone
+        strategy: PHONE
+        keep-prefix: 3
+        keep-suffix: 4
+        replace-char: '*'
+        enabled: true
+      PASSWORD:
+        field-name: password
+        strategy: PASSWORD
+        replace-char: '*'
+        enabled: true
+      EMAIL:
+        field-name: email
+        strategy: EMAIL
+        replace-char: '*'
+        enabled: true
+      NAME:
+        field-name: name
+        strategy: NAME
+        replace-char: '*'
+        enabled: true
+
+  logger:
+    buffer-size: 10000
+    flush-interval-ms: 500
+    retry-max-attempts: 5
+    dlq-enabled: true
+
+  alarm:
+    enabled: true
+    convergence-enabled: true
+    auto-action-enabled: true
+
+  report:
+    storage-path: ./reports
+    archive-path: ./archive
+    keystore-path: ./keystore.jks
+    keystore-password: changeit
+    encryption-key: 0123456789abcdef0123456789abcdef
+    retention-days: 365
+    auto-generate:
+      daily: true
+      weekly: true
+      monthly: true
+
+  cleanup:
+    enabled: true
+    retention-days: 90
+    max-capacity: 1000000
+    backup-enabled: true
+    backup-path: ./audit-archive
+
+  query:
+    max-page-size: 1000
+    default-page-size: 20
+    timeout-ms: 30000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    root: INFO
+    com.audit: DEBUG
+    org.springframework.data.elasticsearch: DEBUG
+    org.springframework.data.mongodb: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

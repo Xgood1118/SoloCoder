@@ -1,0 +1,107 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: order-system
+  datasource:
+    url: jdbc:mysql://localhost:3306/order_system?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 600000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 10
+          min-idle: 5
+          max-wait: 3000ms
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 10
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: assign_id
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+redisson:
+  address: redis://localhost:6379
+  database: 0
+  connection-pool-size: 20
+  connection-minimum-idle-size: 5
+
+payment:
+  alipay:
+    app-id: ${ALIPAY_APP_ID:demo-app-id}
+    private-key: ${ALIPAY_PRIVATE_KEY:demo-private-key}
+    public-key: ${ALIPAY_PUBLIC_KEY:demo-public-key}
+    callback-url: ${ALIPAY_CALLBACK_URL:http://localhost:8080/api/payment/callback/ALIPAY}
+    gateway-url: https://openapi.alipay.com/gateway.do
+  wechat:
+    app-id: ${WECHAT_APP_ID:demo-app-id}
+    mch-id: ${WECHAT_MCH_ID:demo-mch-id}
+    api-key: ${WECHAT_API_KEY:demo-api-key}
+    callback-url: ${WECHAT_CALLBACK_URL:http://localhost:8080/api/payment/callback/WECHAT}
+  unionpay:
+    merchant-id: ${UNIONPAY_MERCHANT_ID:demo-merchant-id}
+    api-key: ${UNIONPAY_API_KEY:demo-api-key}
+    callback-url: ${UNIONPAY_CALLBACK_URL:http://localhost:8080/api/payment/callback/UNIONPAY}
+
+refund:
+  audit-threshold: 5000
+
+inventory:
+  preoccupy-timeout-minutes: 15
+  alert-threshold: 10
+
+id-generator:
+  worker-id: 1
+  datacenter-id: 1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.ordersystem: DEBUG
+    org.springframework.amqp: WARN
+    org.redisson: WARN

@@ -1,0 +1,77 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: visit-tracking
+  datasource:
+    url: jdbc:mysql://localhost:3306/visit_tracking?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      retries: 3
+      batch-size: 16384
+      linger-ms: 5
+      buffer-memory: 33554432
+      enable-idempotence: true
+      compression-type: lz4
+    consumer:
+      group-id: visit-tracking-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      max-poll-records: 500
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      concurrency: 3
+      ack-mode: manual
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 5000
+
+tracking:
+  session:
+    timeout-minutes: 30
+    idle-threshold-minutes: 5
+    cache-max-size: 100000
+  heartbeat:
+    interval-seconds: 30
+  dedup:
+    cache-ttl-minutes: 10
+    cache-max-size: 1000000
+  timestamp:
+    max-future-hours: 1
+    max-past-hours: 24
+  fingerprint:
+    auto-merge-confidence: 0.8
+    manual-review-threshold: 0.5
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true

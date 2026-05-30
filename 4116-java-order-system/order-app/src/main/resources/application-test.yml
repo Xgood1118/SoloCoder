@@ -1,0 +1,54 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: order-system
+  datasource:
+    url: jdbc:h2:mem:order_system;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  sql:
+    init:
+      mode: never
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: assign_id
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+
+id-generator:
+  worker-id: 1
+  datacenter-id: 1
+
+payment:
+  alipay:
+    app-id: demo
+  refund:
+    audit-threshold: 5000
+
+inventory:
+  preoccupy-timeout-minutes: 15
+  alert-threshold: 10
+
+logging:
+  level:
+    com.ordersystem: DEBUG

@@ -1,0 +1,39 @@
+{
+  "id" : "3fb05b6f-497d-4692-bba4-0055b0716c0a",
+  "name" : "支付回调",
+  "description" : "支付成功回调消息模板",
+  "category" : "payment",
+  "mqType" : "RABBITMQ",
+  "format" : "JSON",
+  "defaultTopic" : null,
+  "defaultExchange" : "payment.exchange",
+  "defaultRoutingKey" : "payment.success",
+  "defaultQueue" : null,
+  "content" : "{\n  \"paymentId\": \"${paymentId}\",\n  \"orderId\": \"${orderId}\",\n  \"userId\": \"${userId}\",\n  \"amount\": ${amount},\n  \"currency\": \"${currency}\",\n  \"paymentMethod\": \"${paymentMethod}\",\n  \"transactionId\": \"${transactionId}\",\n  \"status\": \"${status}\",\n  \"paidAt\": \"${timestamp}\"\n}",
+  "placeholders" : {
+    "amount" : "支付金额",
+    "orderId" : "订单ID",
+    "paymentId" : "支付ID",
+    "paymentMethod" : "支付方式：ALIPAY/WECHAT/CARD",
+    "currency" : "币种",
+    "userId" : "用户ID",
+    "transactionId" : "第三方交易号",
+    "status" : "支付状态",
+    "timestamp" : "支付时间"
+  },
+  "defaultHeaders" : { },
+  "sampleValues" : {
+    "amount" : "299.00",
+    "orderId" : "ORD202401010001",
+    "paymentId" : "PAY1780097181679",
+    "paymentMethod" : "ALIPAY",
+    "currency" : "CNY",
+    "userId" : "USR10001",
+    "transactionId" : "202401011234567890",
+    "status" : "SUCCESS"
+  },
+  "createdAt" : [ 2026, 5, 30, 7, 26, 21, 679139800 ],
+  "updatedAt" : [ 2026, 5, 30, 7, 26, 21, 679371900 ],
+  "createdBy" : null,
+  "version" : "1.0"
+}

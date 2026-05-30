@@ -1,0 +1,51 @@
+{
+  "type": "record",
+  "name": "PaymentCallback",
+  "namespace": "com.mq.simulator.avro",
+  "fields": [
+    {
+      "name": "paymentId",
+      "type": "string",
+      "doc": "支付单号"
+    },
+    {
+      "name": "orderId",
+      "type": "string",
+      "doc": "关联订单号"
+    },
+    {
+      "name": "amount",
+      "type": "double",
+      "doc": "支付金额"
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "doc": "币种"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "PaymentStatus",
+        "symbols": ["PENDING", "SUCCESS", "FAILED", "REFUNDED", "CANCELLED"]
+      },
+      "doc": "支付状态"
+    },
+    {
+      "name": "paymentMethod",
+      "type": "string",
+      "doc": "支付方式"
+    },
+    {
+      "name": "paidAt",
+      "type": "long",
+      "doc": "支付完成时间戳"
+    },
+    {
+      "name": "transactionId",
+      "type": "string",
+      "doc": "第三方交易号"
+    }
+  ]
+}

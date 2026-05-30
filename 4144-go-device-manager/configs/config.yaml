@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+database:
+  driver: sqlite
+  dsn: device_manager.db
+
+redis:
+  addr: localhost:6379
+  password: ""
+  db: 0
+
+heartbeat:
+  default_timeout_seconds: 120
+  check_interval_seconds: 10
+
+security:
+  jwt_secret: your-secret-key
+  token_ttl_hours: 24

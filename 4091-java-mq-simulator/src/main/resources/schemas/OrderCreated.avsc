@@ -1,0 +1,61 @@
+{
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "com.mq.simulator.avro",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": "string",
+      "doc": "订单唯一标识"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "doc": "用户ID"
+    },
+    {
+      "name": "totalAmount",
+      "type": "double",
+      "doc": "订单总金额"
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "doc": "订单状态"
+    },
+    {
+      "name": "createdAt",
+      "type": "long",
+      "doc": "创建时间戳"
+    },
+    {
+      "name": "items",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "OrderItem",
+          "fields": [
+            {
+              "name": "productId",
+              "type": "string"
+            },
+            {
+              "name": "productName",
+              "type": "string"
+            },
+            {
+              "name": "quantity",
+              "type": "int"
+            },
+            {
+              "name": "price",
+              "type": "double"
+            }
+          ]
+        }
+      },
+      "doc": "订单项列表"
+    }
+  ]
+}

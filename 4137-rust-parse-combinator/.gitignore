@@ -1,0 +1,44 @@
+# Rust build artifacts
+/target/
+Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Editor backup files
+*.bak
+*.tmp
+
+# Debug files
+*.dSYM/
+*.pdb
+
+# Release builds (optional - some repos prefer to keep builds out)
+# debug/ and release/ are under target/, so already ignored by /target/
+
+# Local config (keep Cargo.toml.example)
+.env
+.env.local
+.env.*.local
+config.local.toml
+
+# Log files
+*.log
+logs/
+
+# Backup crates index (generated on first build, not needed in repo)
+# .cargo-checksum.json is generated locally
+
+# WebAssembly build output
+*.wasm
+*.wat
+
+# Temp
+tmp/
+temp/
+*.tmp

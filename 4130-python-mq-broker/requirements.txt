@@ -1,0 +1,7 @@
+aio-pika==9.3.0
+aiokafka==0.8.1
+pulsar-client==3.2.0
+pydantic>=2.0.0
+tenacity>=8.2.0
+python-json-logger>=2.0.0
+msgpack>=1.0.0

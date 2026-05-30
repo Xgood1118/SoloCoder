@@ -1,0 +1,59 @@
+server:
+  port: 8080
+  mode: release
+
+database:
+  host: localhost
+  port: 3306
+  user: root
+  password: root
+  database: auth_service
+  max_idle_conns: 10
+  max_open_conns: 100
+
+redis:
+  host: localhost
+  port: 6379
+  password: ""
+  db: 0
+  pool_size: 10
+
+jwt:
+  access_token_expire: 3600
+  refresh_token_expire: 604800
+  issuer: auth-service
+
+security:
+  bcrypt_cost: 12
+  max_login_attempts: 5
+  lock_duration: 1800
+
+sso:
+  enabled: true
+  domain: ".example.com"
+  cookie_name: "sso_session"
+
+rate_limit:
+  enabled: true
+  default_limit: 100
+  window_seconds: 60
+  login_limit: 10
+  register_limit: 5
+
+multi_device:
+  enabled: false
+  max_sessions: 5
+
+sms:
+  provider: aliyun
+  access_key_id: ""
+  access_key_secret: ""
+  sign_name: ""
+  template_code: ""
+
+email:
+  smtp_host: smtp.example.com
+  smtp_port: 587
+  username: ""
+  password: ""
+  from: ""

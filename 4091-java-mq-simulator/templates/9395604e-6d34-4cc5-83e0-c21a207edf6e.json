@@ -1,0 +1,37 @@
+{
+  "id" : "9395604e-6d34-4cc5-83e0-c21a207edf6e",
+  "name" : "用户登录",
+  "description" : "用户登录事件消息模板",
+  "category" : "user",
+  "mqType" : "KAFKA",
+  "format" : "JSON",
+  "defaultTopic" : "user.login",
+  "defaultExchange" : null,
+  "defaultRoutingKey" : null,
+  "defaultQueue" : null,
+  "content" : "{\n  \"userId\": \"${userId}\",\n  \"username\": \"${username}\",\n  \"loginType\": \"${loginType}\",\n  \"ipAddress\": \"${ipAddress}\",\n  \"userAgent\": \"${userAgent}\",\n  \"location\": \"${location}\",\n  \"loginAt\": \"${timestamp}\",\n  \"success\": ${success}\n}",
+  "placeholders" : {
+    "loginType" : "登录类型：PASSWORD/WECHAT/SMS",
+    "success" : "是否登录成功",
+    "ipAddress" : "登录IP地址",
+    "userAgent" : "浏览器UA",
+    "location" : "登录地点",
+    "userId" : "用户ID",
+    "username" : "用户名",
+    "timestamp" : "登录时间"
+  },
+  "defaultHeaders" : { },
+  "sampleValues" : {
+    "loginType" : "PASSWORD",
+    "success" : "true",
+    "ipAddress" : "192.168.1.100",
+    "userAgent" : "Chrome 120.0",
+    "location" : "北京市",
+    "userId" : "USR10001",
+    "username" : "zhangsan"
+  },
+  "createdAt" : [ 2026, 5, 30, 8, 59, 44, 924820700 ],
+  "updatedAt" : [ 2026, 5, 30, 8, 59, 44, 924820700 ],
+  "createdBy" : null,
+  "version" : "1.0"
+}
