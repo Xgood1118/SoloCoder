@@ -1,0 +1,102 @@
+{
+  "entity_type": "lead",
+  "direction": "marketing_to_crm",
+  "source_primary_key": "id",
+  "target_primary_key": "id",
+  "deduplication_fields": ["phone"],
+  "mappings": [
+    {
+      "source_field": "id",
+      "target_field": "marketing_id",
+      "direction": "marketing_to_crm",
+      "required": true
+    },
+    {
+      "source_field": "name",
+      "target_field": "lead_name",
+      "direction": "marketing_to_crm"
+    },
+    {
+      "source_field": "company_name",
+      "target_field": "company_name",
+      "direction": "bidirectional",
+      "required": true
+    },
+    {
+      "source_field": "contact_name",
+      "target_field": "contact_name",
+      "direction": "bidirectional"
+    },
+    {
+      "source_field": "phone",
+      "target_field": "phone",
+      "direction": "bidirectional",
+      "required": true,
+      "conversion": {
+        "type": "phone_format",
+        "params": {
+          "add_prefix": false
+        }
+      }
+    },
+    {
+      "source_field": "email",
+      "target_field": "email",
+      "direction": "bidirectional"
+    },
+    {
+      "source_field": "source",
+      "target_field": "lead_source",
+      "direction": "marketing_to_crm"
+    },
+    {
+      "source_field": "status",
+      "target_field": "status",
+      "direction": "bidirectional",
+      "conversion": {
+        "type": "enum_mapping",
+        "params": {
+          "mapping": {
+            "new": "new",
+            "contacted": "contacted",
+            "qualified": "qualified",
+            "converted": "converted",
+            "lost": "lost"
+          }
+        }
+      }
+    },
+    {
+      "source_field": "industry",
+      "target_field": "industry",
+      "direction": "bidirectional"
+    },
+    {
+      "source_field": "region",
+      "target_field": "region",
+      "direction": "bidirectional"
+    },
+    {
+      "source_field": "owner_id",
+      "target_field": "assigned_to",
+      "direction": "bidirectional"
+    },
+    {
+      "source_field": "score",
+      "target_field": "lead_score",
+      "direction": "marketing_to_crm"
+    },
+    {
+      "source_field": "created_at",
+      "target_field": "created_at",
+      "direction": "marketing_to_crm",
+      "conversion": {
+        "type": "date_format",
+        "params": {
+          "source_format": "%Y-%m-%dT%H:%M:%SZ",
+          "target_format": "%Y-%m-%d %H:%M:%S"
+        }
+      }
+    }
+  ]
+}

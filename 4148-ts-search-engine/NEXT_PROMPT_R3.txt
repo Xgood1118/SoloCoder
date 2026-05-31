@@ -1,0 +1,1 @@
+dist/index.js 启动还是崩：Error: Cannot find module '@koa/router'。node_modules 里装的是 koa-router，但源码 import 还是 `import Router from '@koa/router'`，TypeScript 编译后 output 里写的 require("koa-router") 对不上，导致运行时找不到模块。中文搜索 "机器学习" 查出来的结果 total 还是 0，QueryParser 那边没有做中文 bigram 切分的处理。

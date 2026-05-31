@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Budget Tracker{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Dashboard</h2>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="bi bi-arrow-down-circle text-success display-4 mb-2"></i>
+                <h6 class="text-muted mb-1">Total Income</h6>
+                <h3 class="text-success">¥{{ "%.2f"|format(summary.total_income) }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="bi bi-arrow-up-circle text-danger display-4 mb-2"></i>
+                <h6 class="text-muted mb-1">Total Expense</h6>
+                <h3 class="text-danger">¥{{ "%.2f"|format(summary.total_expense) }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="bi bi-cash-stack {% if summary.net >= 0 %}text-primary{% else %}text-danger{% endif %} display-4 mb-2"></i>
+                <h6 class="text-muted mb-1">Net</h6>
+                <h3 class="{% if summary.net >= 0 %}text-primary{% else %}text-danger{% endif %}">¥{{ "%.2f"|format(summary.net) }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="bi bi-bank text-info display-4 mb-2"></i>
+                <h6 class="text-muted mb-1">Total Accounts</h6>
+                <h3 class="text-info">{{ total_accounts }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if budget_alerts %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark">
+                <i class="bi bi-exclamation-triangle me-2"></i>Budget Alerts
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    {% for alert in budget_alerts %}
+                    <div class="col-md-6">
+                        <div class="alert {% if alert.alert_type == 'exceeded' %}alert-danger{% else %}alert-warning{% endif %} mb-0">
+                            <strong>{{ alert.category_name }}</strong>
+                            {% if alert.alert_type == 'exceeded' %}
+                            has exceeded budget by {{ "%.1f"|format((alert.percentage - 1) * 100) }}%
+                            {% else %}
+                            is at {{ "%.1f"|format(alert.percentage * 100) }}% of budget
+                            {% endif %}
+                            <div class="small mt-1">
+                                Spent: ¥{{ "%.2f"|format(alert.spent) }} / ¥{{ "%.2f"|format(alert.budget_amount) }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                Monthly Expense Trend
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="monthlyTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                Expense by Category
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="categoryPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Recent Transactions</span>
+                <a href="/transactions" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Category</th>
+                                <th>Account</th>
+                                <th>Description</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for txn in recent_transactions %}
+                            <tr>
+                                <td>{{ txn.date }}</td>
+                                <td><span class="badge badge-{{ txn.transaction_type }}">{{ txn.transaction_type }}</span></td>
+                                <td>{{ txn.category_name }}</td>
+                                <td>{{ txn.account_name }}</td>
+                                <td>{{ txn.description or '-' }}</td>
+                                <td class="text-end {% if txn.transaction_type == 'income' %}text-success{% elif txn.transaction_type == 'expense' %}text-danger{% endif %}">
+                                    {% if txn.transaction_type == 'income' %}+{% else %}-{% endif %}¥{{ "%.2f"|format(txn.amount) }}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">No transactions found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const chartColors = [
+    '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+    '#858796', '#6f42c1', '#fd7e14', '#20c997', '#6610f2',
+    '#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#dc3545'
+];
+
+async function loadMonthlyTrend() {
+    const response = await fetch('/api/monthly-trend?months=6');
+    const data = await response.json();
+    const labels = data.map(d => d.month);
+    const values = data.map(d => d.amount);
+    
+    const ctx = document.getElementById('monthlyTrendChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Expenses',
+                data: values,
+                borderColor: '#4e73df',
+                backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: value => '¥' + value
+                    }
+                }
+            }
+        }
+    });
+}
+
+async function loadCategoryPie() {
+    const response = await fetch('/api/category-pie?months=1');
+    const data = await response.json();
+    const labels = data.map(d => d.category);
+    const values = data.map(d => d.amount);
+    
+    const ctx = document.getElementById('categoryPieChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: chartColors.slice(0, labels.length),
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { boxWidth: 12, padding: 10 }
+                }
+            }
+        }
+    });
+}
+
+loadMonthlyTrend();
+loadCategoryPie();
+</script>
+{% endblock %}

@@ -1,0 +1,1 @@
+dist/index.js 启动不起来——找不到模块 @koa/router，node_modules 里装的是 koa-router 但 import 语句没改过来，require 对不上所以服务起不来。中文搜索 "机器学习" 还是返回 0 条，QueryParser 那边对中文词没做任何 bigram 切分。

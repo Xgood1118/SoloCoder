@@ -1,0 +1,104 @@
+{
+  "entity_type": "order",
+  "direction": "crm_to_marketing",
+  "source_primary_key": "id",
+  "target_primary_key": "uuid",
+  "deduplication_fields": ["order_no"],
+  "mappings": [
+    {
+      "source_field": "id",
+      "target_field": "crm_order_id",
+      "direction": "crm_to_marketing",
+      "required": true
+    },
+    {
+      "source_field": "order_no",
+      "target_field": "order_number",
+      "direction": "crm_to_marketing",
+      "required": true
+    },
+    {
+      "source_field": "customer_id",
+      "target_field": "customer_id",
+      "direction": "crm_to_marketing",
+      "required": true
+    },
+    {
+      "source_field": "amount",
+      "target_field": "total_amount",
+      "direction": "crm_to_marketing",
+      "required": true,
+      "conversion": {
+        "type": "amount_scale",
+        "params": {
+          "from_scale": 1,
+          "to_scale": 100
+        }
+      }
+    },
+    {
+      "source_field": "status",
+      "target_field": "status",
+      "direction": "crm_to_marketing",
+      "conversion": {
+        "type": "enum_mapping",
+        "params": {
+          "mapping": {
+            "draft": "pending",
+            "pending": "processing",
+            "paid": "paid",
+            "shipped": "shipped",
+            "completed": "completed",
+            "cancelled": "cancelled"
+          }
+        }
+      }
+    },
+    {
+      "source_field": "sign_date",
+      "target_field": "signed_date",
+      "direction": "crm_to_marketing",
+      "conversion": {
+        "type": "date_format",
+        "params": {
+          "source_format": "%Y-%m-%d",
+          "target_format": "%Y-%m-%dT%H:%M:%SZ"
+        }
+      }
+    },
+    {
+      "source_field": "contract_start_date",
+      "target_field": "contract_from",
+      "direction": "crm_to_marketing",
+      "conversion": {
+        "type": "date_format",
+        "params": {
+          "source_format": "%Y-%m-%d",
+          "target_format": "%Y-%m-%dT%H:%M:%SZ"
+        }
+      }
+    },
+    {
+      "source_field": "contract_end_date",
+      "target_field": "contract_to",
+      "direction": "crm_to_marketing",
+      "conversion": {
+        "type": "date_format",
+        "params": {
+          "source_format": "%Y-%m-%d",
+          "target_format": "%Y-%m-%dT%H:%M:%SZ"
+        }
+      }
+    },
+    {
+      "source_field": "salesperson_id",
+      "target_field": "sales_rep_id",
+      "direction": "crm_to_marketing"
+    },
+    {
+      "source_field": "notes",
+      "target_field": "remark",
+      "direction": "crm_to_marketing"
+    }
+  ]
+}

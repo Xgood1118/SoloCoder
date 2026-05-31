@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Accounts - Budget Tracker{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Accounts</h2>
+
+<div class="row g-4 mb-4">
+    {% set total_balance = accounts | sum(attribute='balance') %}
+    <div class="col-md-4">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <i class="bi bi-wallet2 display-4 mb-2"></i>
+                <h6 class="mb-1 opacity-75">Total Balance</h6>
+                <h3>¥{{ "%.2f"|format(total_balance) }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body">
+                <i class="bi bi-bank display-4 mb-2"></i>
+                <h6 class="mb-1 opacity-75">Active Accounts</h6>
+                <h3>{{ accounts|length }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center bg-info text-white">
+            <div class="card-body">
+                <i class="bi bi-credit-card display-4 mb-2"></i>
+                <h6 class="mb-1 opacity-75">Account Types</h6>
+                <h3>{{ accounts | map(attribute='account_type') | unique | list | length }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        Account List
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Account</th>
+                        <th>Type</th>
+                        <th>Currency</th>
+                        <th>Initial Balance</th>
+                        <th>Current Balance</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for acc in accounts %}
+                    <tr>
+                        <td>
+                            <i class="bi bi-{% if acc.account_type == 'cash' %}cash-stack{% elif acc.account_type == 'bank' %}bank{% elif acc.account_type == 'credit_card' %}credit-card{% elif acc.account_type == 'ewallet' %}phone{% else %}wallet{% endif %} me-2"></i>
+                            <strong>{{ acc.name }}</strong>
+                        </td>
+                        <td><span class="badge bg-secondary">{{ acc.account_type }}</span></td>
+                        <td>{{ acc.currency }}</td>
+                        <td>¥{{ "%.2f"|format(acc.initial_balance) }}</td>
+                        <td class="{% if acc.balance >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            <strong>¥{{ "%.2f"|format(acc.balance) }}</strong>
+                        </td>
+                        <td>
+                            {% if acc.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">No accounts found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

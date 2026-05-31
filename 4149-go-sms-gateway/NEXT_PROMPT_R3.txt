@@ -1,0 +1,1 @@
+bug 一个都没动。15位身份证脱敏还是 "110101********1123" 应为 "123"，parseChineseNum("贰万") 算出 "210000" 应为 "200000"，parseChineseNum("壹佰万") 算出 "1010000" 应为 "1000000"，TestContainsSensitiveWords_ChineseNum/complex_chinese 还是 false。继续修复。

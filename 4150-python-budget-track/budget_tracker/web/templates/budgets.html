@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Budgets - Budget Tracker{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Budgets</h2>
+
+<div class="row g-4 mb-4">
+    {% set total_budget = budgets | sum(attribute='budget_amount') %}
+    {% set total_spent = budgets | sum(attribute='spent') %}
+    {% set active_count = budgets | length %}
+    <div class="col-md-4">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <i class="bi bi-pie-chart display-4 mb-2"></i>
+                <h6 class="mb-1 opacity-75">Active Budgets</h6>
+                <h3>{{ active_count }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center bg-info text-white">
+            <div class="card-body">
+                <i class="bi bi-cash display-4 mb-2"></i>
+                <h6 class="mb-1 opacity-75">Total Budget</h6>
+                <h3>¥{{ "%.2f"|format(total_budget) }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center bg-warning text-dark">
+            <div class="card-body">
+                <i class="bi bi-cart display-4 mb-2"></i>
+                <h6 class="mb-1 opacity-75">Total Spent</h6>
+                <h3>¥{{ "%.2f"|format(total_spent) }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        Budget Progress
+    </div>
+    <div class="card-body">
+        {% if budgets %}
+        <div class="row g-4">
+            {% for budget in budgets %}
+            <div class="col-md-6">
+                <div class="card border-0 bg-light">
+                    <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">
+                            {% if budget.status == 'exceeded' %}
+                            <i class="bi bi-exclamation-circle text-danger me-1"></i>
+                            {% elif budget.status == 'warning' %}
+                            <i class="bi bi-exclamation-triangle text-warning me-1"></i>
+                            {% else %}
+                            <i class="bi bi-check-circle text-success me-1"></i>
+                            {% endif %}
+                            {{ budget.category_name }}
+                        </h6>
+                        <span class="badge {% if budget.status == 'exceeded' %}bg-danger{% elif budget.status == 'warning' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                            {{ "%.1f"|format(budget.percentage * 100) }}%
+                        </span>
+                    </div>
+                    <div class="progress mb-2">
+                        <div class="progress-bar {% if budget.status == 'exceeded' %}bg-danger{% elif budget.status == 'warning' %}bg-warning{% else %}bg-success{% endif %}"
+                             role="progressbar"
+                             style="width: {{ [budget.percentage * 100, 100] | min }}%">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between small text-muted">
+                        <span>Spent: ¥{{ "%.2f"|format(budget.spent) }}</span>
+                        <span>Budget: ¥{{ "%.2f"|format(budget.budget_amount) }}</span>
+                        <span>Remaining: ¥{{ "%.2f"|format(budget.remaining) }}</span>
+                    </div>
+                </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center text-muted py-4">
+            <i class="bi bi-inbox display-4 mb-2"></i>
+            <p>No budgets found. Create a budget to start tracking your expense tracking.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

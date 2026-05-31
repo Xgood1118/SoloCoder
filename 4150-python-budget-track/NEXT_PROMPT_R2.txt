@@ -1,0 +1,1 @@
+Bug修好了，budget list不崩了，emoji全换成了ASCII。测试36/36全过。项目完成。

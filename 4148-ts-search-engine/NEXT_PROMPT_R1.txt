@@ -1,0 +1,1 @@
+构建 src/index.ts 作为主入口，暴露 HTTP 服务器（Koa）和 CLI 两种运行模式。修复 ChineseTokenizer：当 nodejieba 加载失败时，不能回退到 char-by-char 单字符切分（这导致"机器学习"被拆成"机"+"器"+"学"+"习"，索引和搜索完全失效），需要改用简单的双字符滑动窗口作为 fallback。继续补全缺失模块到 dist/，确保所有编译后的 JS 文件存在。

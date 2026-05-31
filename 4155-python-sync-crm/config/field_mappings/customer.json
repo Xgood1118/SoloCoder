@@ -1,0 +1,95 @@
+{
+  "entity_type": "customer",
+  "direction": "crm_to_marketing",
+  "source_primary_key": "id",
+  "target_primary_key": "uuid",
+  "deduplication_fields": ["phone", "company_name"],
+  "mappings": [
+    {
+      "source_field": "id",
+      "target_field": "crm_id",
+      "direction": "crm_to_marketing",
+      "required": true
+    },
+    {
+      "source_field": "company_name",
+      "target_field": "name",
+      "direction": "crm_to_marketing",
+      "required": true
+    },
+    {
+      "source_field": "address",
+      "target_field": "address",
+      "direction": "bidirectional"
+    },
+    {
+      "source_field": "contact",
+      "target_field": "contact_person",
+      "direction": "bidirectional",
+      "required": true
+    },
+    {
+      "source_field": "phone",
+      "target_field": "phone",
+      "direction": "bidirectional",
+      "required": true,
+      "conversion": {
+        "type": "phone_format",
+        "params": {
+          "add_prefix": true,
+          "prefix": "86"
+        }
+      }
+    },
+    {
+      "source_field": "customer_level",
+      "target_field": "level",
+      "direction": "bidirectional",
+      "conversion": {
+        "type": "enum_mapping",
+        "params": {
+          "mapping": {
+            "A": "VIP",
+            "B": "Premium",
+            "C": "Standard",
+            "D": "Basic"
+          }
+        }
+      }
+    },
+    {
+      "source_field": "industry",
+      "target_field": "industry",
+      "direction": "bidirectional"
+    },
+    {
+      "source_field": "follow_status",
+      "target_field": "status",
+      "direction": "bidirectional",
+      "conversion": {
+        "type": "enum_mapping",
+        "params": {
+          "mapping": {
+            "new": "new",
+            "following": "contacted",
+            "negotiating": "negotiating",
+            "closed": "customer",
+            "lost": "lost"
+          }
+        }
+      }
+    },
+    {
+      "source_field": "created_at",
+      "target_field": "created_time",
+      "direction": "crm_to_marketing",
+      "conversion": {
+        "type": "date_format",
+        "params": {
+          "source_format": "%Y-%m-%d %H:%M:%S",
+          "target_format": "%Y-%m-%dT%H:%M:%SZ"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - Budget Tracker{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Reports</h2>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                Monthly Expense Trend
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="height: 350px;">
+                    <canvas id="monthlyTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                Expense by Category
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="height: 350px;">
+                    <canvas id="categoryPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                Monthly Category Comparison (Top 3 Categories)
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="height: 350px;">
+                    <canvas id="categoryComparisonChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const chartColors = [
+    '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+    '#858796', '#6f42c1', '#fd7e14', '#20c997', '#6610f2',
+    '#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#dc3545'
+];
+
+async function loadMonthlyTrend() {
+    const response = await fetch('/api/monthly-trend?months=12');
+    const data = await response.json();
+    const labels = data.map(d => d.month);
+    const values = data.map(d => d.amount);
+    
+    const ctx = document.getElementById('monthlyTrendChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Monthly Expenses',
+                data: values,
+                borderColor: '#4e73df',
+                backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                tension: 0.3,
+                fill: true,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return '¥' + context.parsed.y.toFixed(2);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: value => '¥' + value
+                    }
+                }
+            }
+        }
+    });
+}
+
+async function loadCategoryPie() {
+    const response = await fetch('/api/category-pie?months=1');
+    const data = await response.json();
+    const labels = data.map(d => d.category);
+    const values = data.map(d => d.amount);
+    
+    const ctx = document.getElementById('categoryPieChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: chartColors.slice(0, labels.length),
+                borderWidth: 0,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { boxWidth: 12, padding: 10 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return context.label + ': ¥' + value.toFixed(2) + ' (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+async function loadCategoryComparison() {
+    const response = await fetch('/api/monthly-category-comparison?months=3');
+    const data = await response.json();
+    
+    if (data.length === 0) return;
+    
+    const labels = data[0].data.map(d => d.month);
+    const datasets = data.map((cat, index) => ({
+        label: cat.category_name,
+        data: cat.data.map(d => d.amount),
+        backgroundColor: chartColors[index % chartColors.length],
+        borderColor: chartColors[index % chartColors.length],
+        borderWidth: 1
+    }));
+    
+    const ctx = document.getElementById('categoryComparisonChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { boxWidth: 12, padding: 10 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ¥' + context.parsed.y.toFixed(2);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: value => '¥' + value
+                    }
+                }
+            }
+        }
+    });
+}
+
+loadMonthlyTrend();
+loadCategoryPie();
+loadCategoryComparison();
+</script>
+{% endblock %}

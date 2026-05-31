@@ -1,0 +1,74 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtualenv
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+
+# Logs
+*.log
+logs/
+celerybeat-schedule
+celerybeat.pid
+
+# Config
+.env
+.env.local
+.env.*.local
+config.yaml
+config*.yaml
+secrets.yaml
+
+# Python testing
+.pytest_cache/
+.coverage
+coverage.xml
+coverage.html
+htmlcov/
+.tox/
+.nox/
+
+# Virtualenv
+venv/
+.venv/
+ENV/
+env/
+
+# OS
+Thumbs.db
+.DS_Store

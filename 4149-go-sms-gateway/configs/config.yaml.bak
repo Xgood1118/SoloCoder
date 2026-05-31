@@ -1,0 +1,65 @@
+server:
+  port: 8080
+  mode: debug
+
+log:
+  level: info
+  path: ./logs
+  async_buffer_size: 10000
+
+redis:
+  addr: localhost:6379
+  password: ""
+  db: 0
+
+database:
+  driver: mysql
+  dsn: root:password@tcp(localhost:3306)/sms_gateway?charset=utf8mb4&parseTime=True
+
+channels:
+  - name: aliyun
+    type: aliyun
+    enabled: true
+    weight: 50
+    group: default
+    endpoint: dysmsapi.aliyuncs.com
+    access_key_id: your_access_key
+    access_key_secret: your_access_secret
+    sign_name: your_sign_name
+    timeout: 5s
+    max_retries: 3
+    rate_limit: 100
+    health_check_interval: 30s
+    failure_threshold: 0.5
+    failure_window: 5m
+
+  - name: tencent
+    type: tencent
+    enabled: true
+    weight: 50
+    group: default
+    endpoint: sms.tencentcloudapi.com
+    secret_id: your_secret_id
+    secret_key: your_secret_key
+    app_id: your_app_id
+    sign: your_sign
+    timeout: 5s
+    max_retries: 3
+    rate_limit: 100
+    health_check_interval: 30s
+    failure_threshold: 0.5
+    failure_window: 5m
+
+risk:
+  sensitive_words:
+    - 赌博
+    - 诈骗
+    - 色情
+  frequency_limit:
+    phone_daily_limit: 10
+    phone_hourly_limit: 5
+    ip_daily_limit: 1000
+
+queue:
+  max_size: 10000
+  worker_count: 10
