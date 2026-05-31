@@ -1,1 +1,0 @@
-跑 budget list 命令直接崩了，报 UnicodeEncodeError，Windows 的 GBK 终端没法 encode emoji 字符(✓/⚠/✗)，报错位置在 cli.py 第28行 _print_table 函数，其他命令正常。
