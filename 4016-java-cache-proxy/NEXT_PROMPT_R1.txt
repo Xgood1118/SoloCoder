@@ -1,1 +1,0 @@
-mvn compile 编译不过，UserController.java 报 13 个找不到符号的错误：@GetMapping、@PutMapping、@DeleteMapping、@PathVariable、@RequestParam、@RequestBody 全都标红找不到。pom.xml 里引了 spring-boot-starter 和 spring-boot-starter-data-redis，但没引 spring-boot-starter-web，而 UserController.java 里用了大量 Spring MVC 注解，缺少这个依赖所有 Web 层的代码都跑不起来。

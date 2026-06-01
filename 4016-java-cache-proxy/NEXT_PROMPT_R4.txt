@@ -1,1 +1,0 @@
-应用启动还是崩，Tomcat 在 8100 上跑起来了，但 Redis Pub/Sub 的 listener container 初始化失败导致整个 Spring 上下文关闭：Failed to start bean 'redisMessageListenerContainer'，根因是 RedisConnectionFailureException，连不上 localhost:6379 就直接崩掉而不是跳过或降级。

@@ -1,8 +1,0 @@
-Rust 环境缺少链接器，cargo build 和 cargo test 都无法完成：
-- MSVC 工具链：需要 Visual Studio Build Tools 的 link.exe，系统未安装
-- GNU 工具链：需要 MinGW-w64 的 dlltool.exe，系统未安装
-cargo build / cargo test 报 link.exe 找不到错误，无法完成编译。
-
-修复方法：
-1. 安装 Visual Studio Build Tools（https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022），勾选「使用 C++ 的桌面开发」
-2. 或者安装 MSYS2 + MinGW-w64，用 pacman -S mingw-w64-x86_64工具链
