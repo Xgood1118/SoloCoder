@@ -1,0 +1,148 @@
+version: "1.0"
+name: "BuildForge Example Pipeline"
+description: "An example pipeline demonstrating all BuildForge features"
+
+defaults:
+  build_dir: "build"
+  output_dir: "dist"
+  log_level: "info"
+  timeout: 300
+  java_version: "17"
+  node_version: "20"
+
+environments:
+  dev:
+    log_level: "debug"
+    optimize: false
+    source_maps: true
+    api_endpoint: "https://dev-api.example.com"
+
+  test:
+    log_level: "info"
+    optimize: true
+    source_maps: true
+    api_endpoint: "https://test-api.example.com"
+
+  prod:
+    log_level: "warn"
+    optimize: true
+    source_maps: false
+    api_endpoint: "https://api.example.com"
+    timeout: 600
+
+pipelines:
+  test-unit:
+    description: "Run unit tests"
+    config:
+      test_type: "unit"
+    stages:
+      - name: "unit-tests"
+        mode: parallel
+        steps:
+          - name: "test-python"
+            command: ["python", "-m", "pytest", "tests/unit", "-v"]
+            timeout: 120
+
+          - name: "test-js"
+            command: ["npm", "test", "--", "--testPathPattern=unit"]
+            timeout: 120
+
+  test-integration:
+    description: "Run integration tests"
+    extends: "test-unit"
+    config:
+      test_type: "integration"
+    stages:
+      - name: "integration-tests"
+        mode: serial
+        steps:
+          - name: "start-services"
+            command: ["docker-compose", "up", "-d"]
+            timeout: 60
+
+          - name: "run-integration-tests"
+            command: ["python", "-m", "pytest", "tests/integration", "-v"]
+            depends_on: ["start-services"]
+            timeout: 300
+
+          - name: "stop-services"
+            command: ["docker-compose", "down"]
+            depends_on: ["run-integration-tests"]
+            ignore_failure: true
+
+stages:
+  - name: "clean"
+    mode: serial
+    steps:
+      - name: "clean-build"
+        command: ["python", "-c", "import shutil, os; shutil.rmtree('build', ignore_errors=True); os.makedirs('build', exist_ok=True)"]
+        description: "Clean build directory"
+
+  - name: "install-dependencies"
+    mode: parallel
+    steps:
+      - name: "install-python"
+        command: ["pip", "install", "-r", "requirements.txt"]
+        retry: 3
+        timeout: 300
+
+      - name: "install-node"
+        command: ["npm", "install"]
+        retry: 3
+        timeout: 300
+
+  - name: "build"
+    mode: parallel
+    steps:
+      - name: "build-backend"
+        command: ["python", "setup.py", "build"]
+        env:
+          JAVA_HOME: "/usr/lib/jvm/java-${config.java_version}"
+
+      - name: "build-frontend"
+        script: "npm run build"
+        condition: "${config.optimize == true}"
+
+      - name: "build-docs"
+        command: ["mkdocs", "build"]
+        cwd: "docs"
+
+  - name: "test"
+    mode: serial
+    steps:
+      - name: "run-unit-tests"
+        pipeline: "test-unit"
+
+      - name: "run-lint"
+        command: ["flake8", "src/"]
+        ignore_failure: true
+
+      - name: "run-integration-tests"
+        pipeline: "test-integration"
+        condition: "${env.CI == 'true'}"
+
+artifacts:
+  - name: "backend-app"
+    type: "zip"
+    source: ["build/lib", "configs"]
+    output: "backend-app.zip"
+    includes: ["**/*.py", "**/*.yaml", "**/*.json"]
+    excludes: ["**/__pycache__/**", "**/*.pyc"]
+
+  - name: "frontend-app"
+    type: "tar.gz"
+    source: ["dist/frontend"]
+    output: "frontend-app.tar.gz"
+    includes: ["**/*"]
+    excludes: ["**/*.map"]
+
+  - name: "app-library"
+    type: "jar"
+    source: ["build/classes", "src/main/resources"]
+    output: "app-library.jar"
+
+  - name: "service-image"
+    type: "docker"
+    source: ["."]
+    dockerfile: "Dockerfile"
+    tags: ["latest", "${config.version}", "prod"]

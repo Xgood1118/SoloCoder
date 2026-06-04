@@ -1,0 +1,41 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.layout {
+  min-height: 100vh;
+}
+
+.site-layout-content {
+  padding: 24px;
+  min-height: 280px;
+  background: #fff;
+}
+
+.logo {
+  float: left;
+  width: 120px;
+  height: 31px;
+  margin: 16px 24px 16px 0;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.page-title {
+  margin-bottom: 24px;
+}
+
+.card-container {
+  margin-bottom: 24px;
+}

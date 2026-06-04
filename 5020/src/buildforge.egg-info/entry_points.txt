@@ -1,0 +1,3 @@
+[console_scripts]
+bf = buildforge.cli:cli
+buildforge = buildforge.cli:cli

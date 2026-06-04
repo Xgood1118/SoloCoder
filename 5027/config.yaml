@@ -1,0 +1,26 @@
+database:
+  driver: sqlite
+  host: localhost
+  port: 3306
+  database: ./data/migration.db
+  username: ""
+  password: ""
+  charset: utf8mb4
+
+migration:
+  script_dir: ./migrations
+  history_table: schema_migrations
+  changelog_table: data_change_log
+  auto_validate: true
+
+validation:
+  tables:
+    - name: users
+      check_count: true
+      check_indexes: true
+      check_constraints: true
+  min_row_count: 0
+
+logging:
+  level: INFO
+  file: ./logs/migration.log

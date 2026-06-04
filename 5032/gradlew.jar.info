@@ -1,0 +1,25 @@
+# Gradle Wrapper JAR Information
+# =================================
+#
+# The gradle-wrapper.jar file is required to run Gradle builds.
+#
+# How to get gradle-wrapper.jar:
+#
+# Option 1: Use Android Studio (Recommended)
+# - Open this project in Android Studio
+# - Android Studio will automatically download and set up Gradle Wrapper
+#
+# Option 2: Install Gradle manually and run:
+#   gradle wrapper --gradle-version 8.2
+#
+# Option 3: Download from Maven Central:
+#   URL: https://repo1.maven.org/maven2/org/gradle/gradle-wrapper/8.2/gradle-wrapper-8.2.jar
+#   Save as: gradle/wrapper/gradle-wrapper.jar
+#
+# Option 4: Copy from another Gradle project
+#   Copy gradle-wrapper.jar from another working Android/Gradle project
+#
+# File location: gradle/wrapper/gradle-wrapper.jar
+# File size: ~50 KB
+# SHA-256 (for gradle-wrapper-8.2.jar): 
+#   Check https://repo1.maven.org/maven2/org/gradle/gradle-wrapper/8.2/gradle-wrapper-8.2.jar.sha256

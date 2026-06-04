@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "buildforge"
+version = "0.1.0"
+description = "A build tool for managing task pipelines and artifact packaging"
+requires-python = ">=3.9"
+authors = [{ name = "BuildForge Team" }]
+dependencies = [
+    "PyYAML>=6.0",
+    "jsonschema>=4.19.0",
+    "click>=8.1.0",
+    "docker>=6.1.0",
+    "cryptography>=41.0.0",
+    "aiofiles>=23.0.0",
+]
+
+[project.scripts]
+buildforge = "buildforge.cli:cli"
+bf = "buildforge.cli:cli"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+buildforge = ["schemas/*.json"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

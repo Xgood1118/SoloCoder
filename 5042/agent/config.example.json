@@ -1,0 +1,6 @@
+{
+  "serverUrl": "https://localhost:8443",
+  "agentKey": "your-agent-key-here",
+  "interval": 60,
+  "metrics": ["cpu", "memory", "disk", "network", "process"]
+}

@@ -1,0 +1,257 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite does not support native enums, so we use String types with validation in the application layer
+
+model User {
+  id              String    @id @default(uuid())
+  username        String    @unique
+  password        String
+  name            String
+  role            String
+  employeeId      String?   @unique
+  studentId       String?   @unique
+  departmentId    String?
+  email           String?
+  phone           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  department      Department?         @relation(fields: [departmentId], references: [id])
+  counselorClasses Class[]           @relation("CounselorClasses")
+  classStudents   Class[]             @relation("ClassStudents")
+  taughtCourses   Course[]            @relation("TeacherCourses")
+  enrollments     Enrollment[]
+  attendanceRecords Attendance[]
+  notifications   Notification[]
+  grades          Grade[]             @relation("StudentGrades")
+  enteredGrades   Grade[]             @relation("TeacherGrades")
+  attendanceReports AttendanceReport[]
+}
+
+model Department {
+  id              String    @id @default(uuid())
+  name            String    @unique
+  code            String    @unique
+  description     String?
+  createdAt       DateTime  @default(now())
+
+  users           User[]
+  majors          Major[]
+  courses         Course[]
+}
+
+model Major {
+  id              String    @id @default(uuid())
+  name            String
+  code            String
+  departmentId    String
+  createdAt       DateTime  @default(now())
+
+  department      Department  @relation(fields: [departmentId], references: [id])
+  classes         Class[]
+}
+
+model Class {
+  id              String    @id @default(uuid())
+  name            String
+  grade           Int
+  majorId         String
+  counselorId     String?
+  createdAt       DateTime  @default(now())
+
+  major           Major       @relation(fields: [majorId], references: [id])
+  counselor       User?       @relation("CounselorClasses", fields: [counselorId], references: [id])
+  students        User[]      @relation("ClassStudents")
+  enrollments     Enrollment[]
+  attendanceReports AttendanceReport[]
+}
+
+model Classroom {
+  id              String    @id @default(uuid())
+  building        String
+  roomNumber      String
+  seatCount       Int
+  hasProjector    Boolean   @default(false)
+  description     String?
+  createdAt       DateTime  @default(now())
+
+  schedules       Schedule[]
+  @@unique([building, roomNumber])
+}
+
+model Semester {
+  id              String    @id @default(uuid())
+  name            String
+  academicYear    String
+  startDate       DateTime
+  endDate         DateTime
+  courseSelectionStart DateTime
+  courseSelectionEnd   DateTime
+  gradeEntryDeadline    DateTime
+  isActive        Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+
+  courses         Course[]
+  schedules       Schedule[]
+}
+
+model SystemConfig {
+  id              String    @id @default(uuid())
+  key             String    @unique
+  value           String
+  description     String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Course {
+  id              String    @id @default(uuid())
+  name            String
+  code            String
+  credits         Int
+  departmentId    String
+  teacherId       String
+  semesterId      String
+  minStudents     Int       @default(15)
+  maxStudents     Int       @default(100)
+  description     String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  department      Department  @relation(fields: [departmentId], references: [id])
+  teacher         User        @relation("TeacherCourses", fields: [teacherId], references: [id])
+  semester        Semester    @relation(fields: [semesterId], references: [id])
+  schedules       Schedule[]
+  enrollments     Enrollment[]
+  grades          Grade[]
+  reports         CourseReport[]
+}
+
+model Schedule {
+  id              String    @id @default(uuid())
+  courseId        String
+  classroomId     String
+  semesterId      String
+  dayOfWeek       String
+  startPeriod     Int
+  endPeriod       Int
+  startDate       DateTime
+  endDate         DateTime
+  conflictChecked Boolean   @default(false)
+  hasConflict     Boolean   @default(false)
+  conflictInfo    String?
+  createdAt       DateTime  @default(now())
+
+  course          Course      @relation(fields: [courseId], references: [id])
+  classroom       Classroom   @relation(fields: [classroomId], references: [id])
+  semester        Semester    @relation(fields: [semesterId], references: [id])
+  attendances     Attendance[]
+}
+
+model Enrollment {
+  id              String    @id @default(uuid())
+  studentId       String
+  courseId        String
+  classId         String?
+  status          String    @default("ENROLLED")
+  enrolledAt      DateTime  @default(now())
+  droppedAt       DateTime?
+  createdAt       DateTime  @default(now())
+
+  student         User        @relation(fields: [studentId], references: [id])
+  course          Course      @relation(fields: [courseId], references: [id])
+  class           Class?      @relation(fields: [classId], references: [id])
+  grades          Grade[]
+  attendances     Attendance[]
+  @@unique([studentId, courseId])
+}
+
+model Attendance {
+  id              String    @id @default(uuid())
+  scheduleId      String
+  studentId       String
+  enrollmentId    String
+  date            DateTime
+  status          String
+  remark          String?
+  createdAt       DateTime  @default(now())
+
+  schedule        Schedule    @relation(fields: [scheduleId], references: [id])
+  student         User        @relation(fields: [studentId], references: [id])
+  enrollment      Enrollment  @relation(fields: [enrollmentId], references: [id])
+  @@unique([scheduleId, studentId, date])
+}
+
+model Grade {
+  id              String    @id @default(uuid())
+  studentId       String
+  courseId        String
+  enrollmentId    String
+  teacherId       String
+  regularScore    Float?
+  finalScore      Float?
+  totalScore      Float?
+  isPassed        Boolean?
+  enteredAt       DateTime?
+  isOverdueReminded Boolean  @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  student         User        @relation("StudentGrades", fields: [studentId], references: [id])
+  course          Course      @relation(fields: [courseId], references: [id])
+  enrollment      Enrollment  @relation(fields: [enrollmentId], references: [id])
+  teacher         User        @relation("TeacherGrades", fields: [teacherId], references: [id])
+  @@unique([studentId, courseId])
+}
+
+model Notification {
+  id              String    @id @default(uuid())
+  userId          String
+  type            String
+  title           String
+  content         String
+  isRead          Boolean   @default(false)
+  relatedId       String?
+  relatedType     String?
+  createdAt       DateTime  @default(now())
+
+  user            User        @relation(fields: [userId], references: [id])
+}
+
+model CourseReport {
+  id              String    @id @default(uuid())
+  courseId        String
+  totalStudents   Int
+  avgAttendance   Float
+  avgScore        Float
+  scoreDistribution String
+  passRate        Float
+  generatedAt     DateTime  @default(now())
+
+  course          Course      @relation(fields: [courseId], references: [id])
+}
+
+model AttendanceReport {
+  id              String    @id @default(uuid())
+  classId         String?
+  studentId       String?
+  month           String
+  totalClasses    Int
+  presentCount    Int
+  absentCount     Int
+  lateCount       Int
+  attendanceRate  Float
+  generatedAt     DateTime  @default(now())
+
+  class           Class?      @relation(fields: [classId], references: [id])
+  student         User?       @relation(fields: [studentId], references: [id])
+
+  @@unique([studentId, month])
+}

@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: #0D0D0D;
+  color: #e5e5e5;
+  overflow: hidden;
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 168, 83, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 168, 83, 0.4);
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-navy/40 backdrop-blur-md border border-white/5 rounded-2xl;
+  }
+
+  .glass-card-hover {
+    @apply glass-card hover:bg-navy/60 hover:border-amber/20 transition-all duration-300;
+  }
+
+  .amber-glow {
+    box-shadow: 0 0 20px rgba(212, 168, 83, 0.15), 0 0 60px rgba(212, 168, 83, 0.05);
+  }
+
+  .amber-glow-strong {
+    box-shadow: 0 0 30px rgba(212, 168, 83, 0.3), 0 0 80px rgba(212, 168, 83, 0.1);
+  }
+
+  .text-gradient-amber {
+    @apply bg-gradient-to-r from-amber-light via-amber to-amber-dark bg-clip-text text-transparent;
+  }
+
+  .btn-primary {
+    @apply px-6 py-2.5 bg-amber text-midnight font-display font-semibold rounded-full
+    hover:bg-amber-light transition-all duration-200 hover:shadow-lg hover:shadow-amber/20;
+  }
+
+  .btn-ghost {
+    @apply px-4 py-2 text-zinc-400 hover:text-amber hover:bg-white/5 rounded-full transition-all duration-200;
+  }
+
+  .input-dark {
+    @apply bg-charcoal/60 border border-white/10 rounded-xl px-4 py-3 text-white
+    placeholder-zinc-500 focus:outline-none focus:border-amber/50 focus:ring-1 focus:ring-amber/30
+    transition-all duration-200;
+  }
+}

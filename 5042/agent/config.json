@@ -1,0 +1,6 @@
+{
+  "serverUrl": "http://localhost:8080",
+  "agentKey": "44bac5e8f9c827031b992c22daad578444d48b10ed44a654b697d8c7f57394da",
+  "interval": 10,
+  "metrics": ["cpu", "memory", "disk", "network", "process"]
+}

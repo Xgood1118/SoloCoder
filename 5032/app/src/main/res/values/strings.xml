@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">日程管理</string>
+    <string name="add_schedule">新建日程</string>
+    <string name="edit_schedule">编辑日程</string>
+    <string name="title">标题</string>
+    <string name="time">时间</string>
+    <string name="location">地点</string>
+    <string name="description">描述</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="delete">删除</string>
+    <string name="complete">完成</string>
+    <string name="repeat">重复</string>
+    <string name="no_repeat">不重复</string>
+    <string name="repeat_daily">每天</string>
+    <string name="repeat_weekly">每周</string>
+    <string name="repeat_monthly">每月</string>
+    <string name="reminder">提醒</string>
+    <string name="add_reminder">添加提醒</string>
+    <string name="reminder_5_min">5分钟前</string>
+    <string name="reminder_15_min">15分钟前</string>
+    <string name="reminder_30_min">30分钟前</string>
+    <string name="reminder_1_hour">1小时前</string>
+    <string name="reminder_1_day">1天前</string>
+    <string name="reminder_type">提醒方式</string>
+    <string name="reminder_notification">通知</string>
+    <string name="reminder_vibrate">震动</string>
+    <string name="reminder_sound">铃声</string>
+    <string name="select_days">选择星期</string>
+    <string name="select_day_of_month">选择日期</string>
+    <string name="no_schedules">暂无日程</string>
+    <string name="schedule_reminder">日程提醒</string>
+</resources>

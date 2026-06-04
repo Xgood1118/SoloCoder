@@ -1,0 +1,174 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://buildforge.io/schemas/pipeline.json",
+    "title": "BuildForge Pipeline Schema",
+    "type": "object",
+    "required": ["version", "name", "stages"],
+    "properties": {
+        "version": {
+            "type": "string",
+            "description": "Pipeline format version",
+            "enum": ["1.0"]
+        },
+        "name": {
+            "type": "string",
+            "description": "Pipeline name"
+        },
+        "description": {
+            "type": "string",
+            "description": "Pipeline description"
+        },
+        "defaults": {
+            "$ref": "#/definitions/Config"
+        },
+        "environments": {
+            "type": "object",
+            "description": "Environment-specific configurations",
+            "properties": {
+                "dev": { "$ref": "#/definitions/Config" },
+                "test": { "$ref": "#/definitions/Config" },
+                "prod": { "$ref": "#/definitions/Config" }
+            },
+            "additionalProperties": { "$ref": "#/definitions/Config" }
+        },
+        "pipelines": {
+            "type": "object",
+            "description": "Sub-pipeline definitions",
+            "additionalProperties": {
+                "$ref": "#/definitions/PipelineRef"
+            }
+        },
+        "stages": {
+            "type": "array",
+            "description": "Pipeline stages executed in order",
+            "items": { "$ref": "#/definitions/Stage" }
+        },
+        "artifacts": {
+            "type": "array",
+            "description": "Artifact definitions to package",
+            "items": { "$ref": "#/definitions/Artifact" }
+        }
+    },
+    "definitions": {
+        "Config": {
+            "type": "object",
+            "description": "Configuration with arbitrary key-value pairs",
+            "additionalProperties": true
+        },
+        "PipelineRef": {
+            "type": "object",
+            "required": ["stages"],
+            "properties": {
+                "description": { "type": "string" },
+                "extends": { "type": "string" },
+                "config": { "$ref": "#/definitions/Config" },
+                "stages": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/Stage" }
+                }
+            }
+        },
+        "Stage": {
+            "type": "object",
+            "required": ["name", "steps"],
+            "properties": {
+                "name": { "type": "string" },
+                "description": { "type": "string" },
+                "mode": {
+                    "type": "string",
+                    "enum": ["serial", "parallel"],
+                    "default": "parallel"
+                },
+                "steps": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/Step" }
+                },
+                "condition": {
+                    "type": "string",
+                    "description": "Condition expression to determine if stage should run"
+                }
+            }
+        },
+        "Step": {
+            "type": "object",
+            "required": ["name"],
+            "oneOf": [
+                { "required": ["command"] },
+                { "required": ["script"] },
+                { "required": ["pipeline"] }
+            ],
+            "properties": {
+                "name": { "type": "string" },
+                "description": { "type": "string" },
+                "command": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "script": { "type": "string" },
+                "pipeline": { "type": "string" },
+                "depends_on": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Names of steps that must complete before this step"
+                },
+                "cwd": { "type": "string" },
+                "env": {
+                    "type": "object",
+                    "additionalProperties": { "type": "string" }
+                },
+                "timeout": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Timeout in seconds"
+                },
+                "retry": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 0,
+                    "description": "Number of retry attempts on failure"
+                },
+                "condition": {
+                    "type": "string",
+                    "description": "Condition expression to determine if step should run"
+                },
+                "ignore_failure": {
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "Artifact": {
+            "type": "object",
+            "required": ["name", "type", "source"],
+            "properties": {
+                "name": { "type": "string" },
+                "type": {
+                    "type": "string",
+                    "enum": ["zip", "tar.gz", "jar", "docker"]
+                },
+                "source": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "output": { "type": "string" },
+                "includes": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "excludes": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "dockerfile": { "type": "string" },
+                "tags": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "sign": {
+                    "type": "boolean",
+                    "default": true
+                }
+            }
+        }
+    }
+}

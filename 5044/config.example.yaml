@@ -1,0 +1,49 @@
+# 数据库配置
+db:
+  # 数据库类型: sqlite, mysql, postgres
+  type: sqlite
+  # 数据库连接串
+  # SQLite: "scheduler.db"
+  # MySQL: "user:password@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
+  # PostgreSQL: "host=localhost user=postgres password=secret dbname=scheduler port=5432 sslmode=disable"
+  dsn: scheduler.db
+  # 最大打开连接数
+  max_open_conns: 10
+  # 最大空闲连接数
+  max_idle_conns: 5
+
+# Worker 数量配置
+worker_count: 5
+
+# 队列大小配置
+queue_size: 1000
+
+# 重试策略配置
+retry:
+  # 最大重试次数
+  max_retries: 3
+  # 重试间隔数组（支持格式：1s, 1m, 5m, 30m, 1h, 1h30m 等）
+  retry_intervals:
+    - 1m    # 第1次重试：1分钟
+    - 5m    # 第2次重试：5分钟
+    - 30m   # 第3次重试：30分钟
+
+# 节点配置
+node:
+  # 节点唯一标识，用于分布式部署
+  node_id: node-1
+  # 节点名称，便于管理
+  node_name: default-node
+
+# 告警配置
+alert:
+  # 是否启用告警
+  enabled: true
+  # 告警类型: webhook, email
+  type: webhook
+  # Webhook 地址（如钉钉、企业微信、飞书等）
+  webhook: https://oapi.dingtalk.com/robot/send?access_token=your_token
+  # 邮件收件人列表（当 type 为 email 时使用）
+  emails:
+    - admin@example.com
+    - ops@example.com

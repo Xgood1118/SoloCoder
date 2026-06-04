@@ -1,0 +1,27 @@
+{
+  "name": "academic-management-system",
+  "version": "1.0.0",
+  "description": "数字化校园教务管理系统",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "build": "npm run build:server && npm run build:client",
+    "build:server": "cd server && npm run build",
+    "build:client": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "db:setup": "cd server && npm run db:setup"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "playwright": "^1.60.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
+}

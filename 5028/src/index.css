@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "Noto Sans SC", system-ui, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  color: #041825;
+  background-color: #FEFCF8;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  overscroll-behavior: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-coral-500 text-white rounded-full px-6 py-3 font-medium
+           hover:bg-coral-600 active:scale-95 transition-all duration-200;
+  }
+
+  .btn-outline {
+    @apply border-2 border-coral-500 text-coral-500 rounded-full px-6 py-3 font-medium
+           hover:bg-coral-50 active:scale-95 transition-all duration-200;
+  }
+
+  .card-base {
+    @apply bg-white rounded-xl shadow-card overflow-hidden
+           hover:shadow-card-hover transition-shadow duration-300;
+  }
+
+  .input-base {
+    @apply w-full bg-sand-100 border-0 rounded-xl px-4 py-3 text-sm
+           placeholder:text-ocean-300 focus:ring-2 focus:ring-coral-400 focus:bg-white
+           transition-all duration-200 outline-none;
+  }
+
+  .section-title {
+    @apply font-serif text-xl font-semibold text-ocean-800;
+  }
+}
+
+.leaflet-container {
+  z-index: 0;
+  border-radius: 12px;
+}
+
+.drag-overlay {
+  opacity: 0.8;
+  transform: scale(1.02);
+  box-shadow: 0 8px 30px rgba(15, 76, 117, 0.2);
+}

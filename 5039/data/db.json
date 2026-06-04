@@ -1,0 +1,32 @@
+{
+  "categories": [],
+  "tags": [],
+  "templates": [
+    {
+      "id": "c83c782b-14a8-4b22-9e60-805e8751d9b2",
+      "name": "????",
+      "type": "news",
+      "layout_config": {
+        "sidebar": true,
+        "columns": 2
+      },
+      "created_at": "2026-06-04T02:27:37.988Z",
+      "updated_at": "2026-06-04T02:27:37.988Z"
+    }
+  ],
+  "articles": [],
+  "article_versions": [],
+  "approvals": [],
+  "operation_logs": [
+    {
+      "id": "587fd4af-c3fe-4728-be32-143d0ac078e9",
+      "operator_id": "system",
+      "operator_name": "系统用户",
+      "action": "create",
+      "target_type": "template",
+      "target_id": "c83c782b-14a8-4b22-9e60-805e8751d9b2",
+      "details": "创建模板: ????",
+      "created_at": "2026-06-04T02:27:37.989Z"
+    }
+  ]
+}

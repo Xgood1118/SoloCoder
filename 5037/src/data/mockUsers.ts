@@ -1,0 +1,58 @@
+import { User } from '@/types';
+
+export const mockUsers: User[] = [
+  {
+    id: 'u1',
+    nickname: '美食小当家',
+    avatar: '',
+    bio: '热爱烹饪，分享家常美味。',
+    isExpert: true,
+    followerCount: 520,
+    followingCount: 38,
+  },
+  {
+    id: 'u2',
+    nickname: '厨房艺术家',
+    avatar: '',
+    bio: '用心做好每一道菜，烘焙达人。',
+    isExpert: true,
+    followerCount: 380,
+    followingCount: 25,
+  },
+  {
+    id: 'u3',
+    nickname: '味蕾探险家',
+    avatar: '',
+    bio: '探索各地风味，享受烹饪乐趣。',
+    isExpert: true,
+    followerCount: 290,
+    followingCount: 42,
+  },
+  {
+    id: 'u4',
+    nickname: '新手小白',
+    avatar: '',
+    bio: '正在学习做菜中～',
+    isExpert: false,
+    followerCount: 15,
+    followingCount: 68,
+  },
+  {
+    id: 'u5',
+    nickname: '烘焙匠人',
+    avatar: '',
+    bio: '专注于面包与甜点，追求完美的烘焙工艺。',
+    isExpert: true,
+    followerCount: 445,
+    followingCount: 19,
+  },
+  {
+    id: 'u6',
+    nickname: '汤王老张',
+    avatar: '',
+    bio: '一锅好汤暖全家，汤煲粥品样样精通。',
+    isExpert: true,
+    followerCount: 210,
+    followingCount: 33,
+  },
+];
