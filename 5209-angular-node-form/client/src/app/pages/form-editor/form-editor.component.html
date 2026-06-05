@@ -1,0 +1,258 @@
+<div class="editor-container">
+  <div class="editor-header">
+    <button class="btn btn-default" (click)="goBack()">← 返回</button>
+    <h2 style="flex: 1; text-align: center;">{{ isNew ? '新建表单' : '编辑表单' }}</h2>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn btn-default" *ngIf="!isNew" (click)="showVersionsModal = true">版本历史</button>
+      <button class="btn btn-default" *ngIf="!isNew" (click)="showShareModal = true">分享</button>
+      <button class="btn btn-default" (click)="exportJson()">导出配置</button>
+      <button class="btn btn-primary" (click)="saveForm()">保存</button>
+    </div>
+  </div>
+
+  <div class="editor-body">
+    <div class="editor-sidebar">
+      <div class="card" style="padding: 16px;">
+        <h3 style="margin-bottom: 12px; font-size: 16px;">表单信息</h3>
+        <div class="form-item">
+          <label class="form-label">表单名称</label>
+          <input type="text" class="form-input" [(ngModel)]="formConfig.name" placeholder="请输入表单名称">
+        </div>
+        <div class="form-item">
+          <label class="form-label">表单描述</label>
+          <textarea class="form-textarea" [(ngModel)]="formConfig.description" placeholder="请输入表单描述"></textarea>
+        </div>
+        <div class="form-item">
+          <label class="form-label">Webhook URL</label>
+          <input type="text" class="form-input" [(ngModel)]="formConfig.webhookUrl" placeholder="可选，提交时回调">
+        </div>
+      </div>
+
+      <div class="card" style="padding: 16px;">
+        <h3 style="margin-bottom: 12px; font-size: 16px;">添加字段</h3>
+        <div class="field-type-grid">
+          <button *ngFor="let ft of fieldTypes" class="btn btn-default btn-sm field-type-btn" (click)="addField(ft.value)">
+            + {{ ft.label }}
+          </button>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 16px;">
+        <h3 style="margin-bottom: 12px; font-size: 16px;">字段列表</h3>
+        <div *ngIf="formConfig.fields.length === 0" style="color: #999; font-size: 13px; text-align: center; padding: 20px 0;">
+          暂无字段，点击上方按钮添加
+        </div>
+        <div class="field-list">
+          <div *ngFor="let field of formConfig.fields; let i = index"
+               class="field-list-item"
+               [class.active]="selectedFieldIndex === i"
+               (click)="selectedFieldIndex = i">
+            <span>{{ field.label }}</span>
+            <div class="field-actions">
+              <button class="btn btn-sm btn-default" (click)="$event.stopPropagation(); moveField(i, -1)">↑</button>
+              <button class="btn btn-sm btn-default" (click)="$event.stopPropagation(); moveField(i, 1)">↓</button>
+              <button class="btn btn-sm btn-danger" (click)="$event.stopPropagation(); removeField(i)">×</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="editor-config">
+      <div class="card" style="padding: 20px;" *ngIf="selectedFieldIndex >= 0">
+        <h3 style="margin-bottom: 20px; font-size: 16px;">字段属性</h3>
+        
+        <div class="field-config-section">
+          <h4>基本属性</h4>
+          <div class="form-item">
+            <label class="form-label">字段标签</label>
+            <input type="text" class="form-input" [(ngModel)]="formConfig.fields[selectedFieldIndex].label">
+          </div>
+          <div class="form-item">
+            <label class="form-label">字段名 (key)</label>
+            <input type="text" class="form-input" 
+                   [(ngModel)]="formConfig.fields[selectedFieldIndex].key"
+                   [disabled]="formConfig.fields[selectedFieldIndex].isLocked"
+                   [style.background]="formConfig.fields[selectedFieldIndex].isLocked ? '#f5f5f5' : ''">
+            <div *ngIf="formConfig.fields[selectedFieldIndex].isLocked" class="help-text">模板字段，字段名已锁定</div>
+          </div>
+          <div class="form-item">
+            <label class="form-label">
+              <input type="checkbox" [(ngModel)]="formConfig.fields[selectedFieldIndex].required">
+              必填
+            </label>
+          </div>
+        </div>
+
+        <div class="field-config-section">
+          <h4>提示信息</h4>
+          <div class="form-item">
+            <label class="form-label">占位提示</label>
+            <input type="text" class="form-input" [(ngModel)]="formConfig.fields[selectedFieldIndex].placeholder">
+            <div class="help-text">可使用 {字段名} 引用其他字段值，如 "请输入{部门}的员工姓名"</div>
+          </div>
+          <div class="form-item">
+            <label class="form-label">帮助文字</label>
+            <input type="text" class="form-input" [(ngModel)]="formConfig.fields[selectedFieldIndex].helpText">
+          </div>
+          <div class="form-item">
+            <label class="form-label">默认值</label>
+            <input type="text" class="form-input" [(ngModel)]="formConfig.fields[selectedFieldIndex].defaultValue">
+          </div>
+        </div>
+
+        <div class="field-config-section" *ngIf="hasOptions(formConfig.fields[selectedFieldIndex].type)">
+          <h4>选项配置</h4>
+          <div *ngFor="let opt of formConfig.fields[selectedFieldIndex].options; let i = index" style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <input type="text" class="form-input" [(ngModel)]="opt.label" placeholder="标签" style="flex: 1;">
+            <input type="text" class="form-input" [(ngModel)]="opt.value" placeholder="值" style="flex: 1;">
+            <button class="btn btn-sm btn-danger" (click)="removeOption(formConfig.fields[selectedFieldIndex], i)">删除</button>
+          </div>
+          <button class="btn btn-default btn-sm" (click)="addOption(formConfig.fields[selectedFieldIndex])">+ 添加选项</button>
+        </div>
+
+        <div class="field-config-section">
+          <h4>类型配置 (type-meta)</h4>
+          <div *ngIf="formConfig.fields[selectedFieldIndex].type === 'text' || formConfig.fields[selectedFieldIndex].type === 'textarea'">
+            <div class="form-item">
+              <label class="form-label">最小长度</label>
+              <input type="number" class="form-input" [(ngModel)]="formConfig.fields[selectedFieldIndex].typeMeta!.minLength">
+            </div>
+            <div class="form-item">
+              <label class="form-label">最大长度</label>
+              <input type="number" class="form-input" [(ngModel)]="formConfig.fields[selectedFieldIndex].typeMeta!.maxLength">
+            </div>
+          </div>
+          <div *ngIf="formConfig.fields[selectedFieldIndex].type === 'number'">
+            <div class="form-item">
+              <label class="form-label">最小值</label>
+              <input type="number" class="form-input" [(ngModel)]="formConfig.fields[selectedFieldIndex].typeMeta!.min">
+            </div>
+            <div class="form-item">
+              <label class="form-label">最大值</label>
+              <input type="number" class="form-input" [(ngModel)]="formConfig.fields[selectedFieldIndex].typeMeta!.max">
+            </div>
+          </div>
+          <div *ngIf="formConfig.fields[selectedFieldIndex].type === 'file'">
+            <div class="form-item">
+              <label class="form-label">最大文件数</label>
+              <input type="number" class="form-input" [(ngModel)]="formConfig.fields[selectedFieldIndex].typeMeta!.maxFiles">
+            </div>
+            <div class="form-item">
+              <label class="form-label">单个文件最大大小 (字节)</label>
+              <input type="number" class="form-input" [(ngModel)]="formConfig.fields[selectedFieldIndex].typeMeta!.maxSize">
+            </div>
+          </div>
+        </div>
+
+        <div class="field-config-section">
+          <h4>公式计算</h4>
+          <div class="form-item">
+            <label class="form-label">公式表达式</label>
+            <input type="text" class="form-input" [(ngModel)]="formConfig.fields[selectedFieldIndex].formula" placeholder="如: {field_a} * 2">
+            <div class="help-text">使用 {字段名} 引用其他字段，支持加减乘除</div>
+          </div>
+        </div>
+
+        <div class="field-config-section">
+          <h4>校验规则</h4>
+          <div class="form-item">
+            <label class="form-label">正则表达式</label>
+            <input type="text" class="form-input" [(ngModel)]="formConfig.fields[selectedFieldIndex].validation?.pattern" placeholder="如: ^1[3-9]\d{9}$">
+          </div>
+        </div>
+
+        <div class="field-config-section">
+          <h4>条件显示</h4>
+          <div *ngIf="!formConfig.fields[selectedFieldIndex].conditionalShow">
+            <button class="btn btn-default btn-sm" (click)="addCondition('show', formConfig.fields[selectedFieldIndex])">添加条件</button>
+          </div>
+          <div *ngIf="formConfig.fields[selectedFieldIndex].conditionalShow">
+            <app-condition-editor 
+              [condition]="formConfig.fields[selectedFieldIndex].conditionalShow!"
+              [fields]="formConfig.fields">
+            </app-condition-editor>
+            <button class="btn btn-danger btn-sm" (click)="formConfig.fields[selectedFieldIndex].conditionalShow = undefined">移除条件</button>
+          </div>
+        </div>
+
+        <div class="field-config-section">
+          <h4>条件必填</h4>
+          <div *ngIf="!formConfig.fields[selectedFieldIndex].conditionalRequired">
+            <button class="btn btn-default btn-sm" (click)="addCondition('required', formConfig.fields[selectedFieldIndex])">添加条件</button>
+          </div>
+          <div *ngIf="formConfig.fields[selectedFieldIndex].conditionalRequired">
+            <app-condition-editor 
+              [condition]="formConfig.fields[selectedFieldIndex].conditionalRequired!"
+              [fields]="formConfig.fields">
+            </app-condition-editor>
+            <button class="btn btn-danger btn-sm" (click)="formConfig.fields[selectedFieldIndex].conditionalRequired = undefined">移除条件</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 20px;" *ngIf="selectedFieldIndex < 0">
+        <p style="color: #999; text-align: center;">选择左侧字段进行配置</p>
+      </div>
+    </div>
+
+    <div class="editor-preview">
+      <div class="card" style="padding: 20px;">
+        <h3 style="margin-bottom: 16px; font-size: 16px;">实时预览</h3>
+        <div *ngIf="formConfig.fields.length === 0" style="color: #999; text-align: center; padding: 40px 0;">
+          添加字段后在此预览效果
+        </div>
+        <app-dynamic-form 
+          *ngIf="formConfig.fields.length > 0"
+          [formConfig]="formConfig"
+          (formSubmit)="onPreviewSubmit($event)">
+        </app-dynamic-form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showVersionsModal" (click)="showVersionsModal = false">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>版本历史</h3>
+    <div *ngIf="versions.length === 0" style="color: #999;">暂无版本记录</div>
+    <table *ngIf="versions.length > 0">
+      <thead>
+        <tr>
+          <th>版本号</th>
+          <th>备注</th>
+          <th>创建时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let v of versions">
+          <td>v{{ v.versionNumber }}</td>
+          <td>{{ v.note }}</td>
+          <td>{{ v.createdAt | date:'yyyy-MM-dd HH:mm' }}</td>
+          <td>
+            <button class="btn btn-sm btn-default" (click)="rollbackVersion(v)">回滚</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="modal-actions">
+      <button class="btn btn-default" (click)="showVersionsModal = false">关闭</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showShareModal" (click)="showShareModal = false">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>分享表单</h3>
+    <div class="form-item">
+      <label class="form-label">分享给用户</label>
+      <input type="text" class="form-input" [(ngModel)]="shareUsers" placeholder="多个用户用逗号分隔">
+      <div class="help-text">输入用户名，多个用逗号分隔</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-default" (click)="showShareModal = false">取消</button>
+      <button class="btn btn-primary" (click)="shareForm()">确定</button>
+    </div>
+  </div>
+</div>

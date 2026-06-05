@@ -1,0 +1,126 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="dynamic-form">
+  <div *ngFor="let field of formConfig.fields" class="form-item" [hidden]="!isFieldVisible(field)">
+    <label class="form-label">
+      {{ field.label }}
+      <span *ngIf="isFieldRequired(field)" class="required">*</span>
+    </label>
+
+    <div [ngSwitch]="field.type">
+      <input *ngSwitchCase="'text'"
+             type="text"
+             [formControlName]="field.key"
+             class="form-input"
+             [placeholder]="getPlaceholder(field)"
+             [readonly]="readOnly">
+
+      <textarea *ngSwitchCase="'textarea'"
+                [formControlName]="field.key"
+                class="form-textarea"
+                [placeholder]="getPlaceholder(field)"
+                [readonly]="readOnly"></textarea>
+
+      <input *ngSwitchCase="'number'"
+             type="number"
+             [formControlName]="field.key"
+             class="form-input"
+             [placeholder]="getPlaceholder(field)"
+             [readonly]="readOnly"
+             [min]="field.typeMeta?.min"
+             [max]="field.typeMeta?.max"
+             [step]="field.formula ? 'any' : '1'">
+
+      <input *ngSwitchCase="'date'"
+             type="date"
+             [formControlName]="field.key"
+             class="form-input"
+             [readonly]="readOnly">
+
+      <input *ngSwitchCase="'time'"
+             type="time"
+             [formControlName]="field.key"
+             class="form-input"
+             [readonly]="readOnly">
+
+      <select *ngSwitchCase="'select'"
+              [formControlName]="field.key"
+              class="form-input"
+              [disabled]="readOnly">
+        <option value="">请选择</option>
+        <option *ngFor="let opt of field.options" [value]="opt.value">{{ opt.label }}</option>
+      </select>
+
+      <select *ngSwitchCase="'multiselect'"
+              multiple
+              [formControlName]="field.key"
+              class="form-input"
+              [disabled]="readOnly">
+        <option *ngFor="let opt of field.options" [value]="opt.value">{{ opt.label }}</option>
+      </select>
+
+      <div *ngSwitchCase="'radio'" class="radio-group">
+        <label *ngFor="let opt of field.options" class="radio-item">
+          <input type="radio"
+                 [formControlName]="field.key"
+                 [value]="opt.value"
+                 [disabled]="readOnly">
+          {{ opt.label }}
+        </label>
+      </div>
+
+      <div *ngSwitchCase="'checkbox'" class="checkbox-group">
+        <label *ngFor="let opt of field.options" class="checkbox-item">
+          <input type="checkbox"
+                 [value]="opt.value"
+                 [disabled]="readOnly"
+                 (change)="onCheckboxChange(field, opt.value, $event)">
+          {{ opt.label }}
+        </label>
+      </div>
+
+      <div *ngSwitchCase="'rating'" class="rating">
+        <span *ngFor="let star of [1,2,3,4,5]"
+              class="rating-star"
+              [class.active]="formGroup.get(field.key)?.value >= star"
+              (click)="setRating(field, star)">★</span>
+      </div>
+
+      <div *ngSwitchCase="'file'">
+        <div class="file-upload-area" (click)="fileInput.click()" *ngIf="!readOnly">
+          <p>点击上传文件</p>
+          <p style="font-size: 12px; color: #999;">支持 JPG、PNG、PDF，单个文件 5MB 以内，最多 5 个</p>
+        </div>
+        <input type="file"
+               style="display: none;"
+               #fileInput
+               multiple
+               accept=".jpg,.jpeg,.png,.pdf"
+               (change)="onFileChange($event, field, fileInput)">
+        <div class="file-preview" *ngIf="formGroup.get(field.key)?.value?.length > 0">
+          <div *ngFor="let file of formGroup.get(field.key)?.value; let i = index" class="file-preview-item">
+            <img *ngIf="isImage(file)" [src]="isImage(file) && file.file ? getObjectUrl(file.file) : getFilePath(file)" alt="{{ file.name || file.originalName }}">
+            <div *ngIf="!isImage(file)" style="padding: 20px; text-align: center; font-size: 12px;">
+              {{ file.name || file.originalName }}
+            </div>
+            <span class="remove" *ngIf="!readOnly" (click)="removeFile(field, i)">×</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="field.helpText" class="help-text">{{ field.helpText }}</div>
+
+    <div *ngIf="formGroup.get(field.key)?.invalid && (formGroup.get(field.key)?.dirty || formGroup.get(field.key)?.touched)"
+         class="error-text">
+      <span *ngIf="formGroup.get(field.key)?.errors?.['required']">此字段为必填项</span>
+      <span *ngIf="formGroup.get(field.key)?.errors?.['minlength']">最少 {{ field.typeMeta?.minLength }} 个字符</span>
+      <span *ngIf="formGroup.get(field.key)?.errors?.['maxlength']">最多 {{ field.typeMeta?.maxLength }} 个字符</span>
+      <span *ngIf="formGroup.get(field.key)?.errors?.['min']">最小值为 {{ field.typeMeta?.min }}</span>
+      <span *ngIf="formGroup.get(field.key)?.errors?.['max']">最大值为 {{ field.typeMeta?.max }}</span>
+      <span *ngIf="formGroup.get(field.key)?.errors?.['pattern']">格式不正确</span>
+    </div>
+  </div>
+
+  <div *ngIf="!readOnly">
+    <button type="submit" class="btn btn-primary" [disabled]="!formGroup.valid">提交</button>
+  </div>
+</form>

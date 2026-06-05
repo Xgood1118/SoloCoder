@@ -1,0 +1,32 @@
+<div class="condition-editor">
+  <div class="condition-row">
+    <select class="form-input" [(ngModel)]="condition.op" (change)="toggleCompound()" style="width: 120px; margin-right: 8px;">
+      <option *ngFor="let op of operators" [value]="op.value">{{ op.label }}</option>
+    </select>
+
+    <ng-container *ngIf="!isCompound(condition.op)">
+      <select class="form-input" [(ngModel)]="condition.field" style="width: 150px; margin-right: 8px;">
+        <option value="">选择字段</option>
+        <option *ngFor="let f of fields" [value]="f.key">{{ f.label }}</option>
+      </select>
+
+      <input *ngIf="isValueNeeded(condition.op)" 
+             type="text" 
+             class="form-input" 
+             [(ngModel)]="condition.value" 
+             placeholder="值"
+             style="flex: 1;">
+    </ng-container>
+  </div>
+
+  <div *ngIf="isCompound(condition.op) && condition.children?.length" class="condition-children">
+    <div *ngFor="let child of condition.children; let i = index" class="condition-child">
+      <app-condition-editor 
+        [condition]="child" 
+        [fields]="fields">
+      </app-condition-editor>
+      <button class="btn btn-sm btn-danger remove-child-btn" (click)="removeChild(i)">×</button>
+    </div>
+    <button class="btn btn-sm btn-default" (click)="addChild()">+ 添加条件</button>
+  </div>
+</div>

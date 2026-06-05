@@ -1,0 +1,28 @@
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <button class="btn btn-default" (click)="goBack()">← 返回</button>
+      <h2>模板市场</h2>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="loading">
+    <p>加载中...</p>
+  </div>
+
+  <div class="template-grid" *ngIf="!loading">
+    <div *ngFor="let template of templates" class="template-card">
+      <div class="template-card-header">
+        <h3>{{ template.name }}</h3>
+        <span class="tag" *ngIf="template.isBuiltIn">内置</span>
+      </div>
+      <p class="template-desc">{{ template.description }}</p>
+      <div class="template-meta">
+        <span>{{ template.formConfig.fields?.length || 0 }} 个字段</span>
+      </div>
+      <div class="template-actions">
+        <button class="btn btn-primary btn-sm" (click)="useTemplate(template)">使用模板</button>
+      </div>
+    </div>
+  </div>
+</div>

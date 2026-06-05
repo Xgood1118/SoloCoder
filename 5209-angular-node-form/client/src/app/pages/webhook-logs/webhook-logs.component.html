@@ -1,0 +1,51 @@
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Webhook 日志</h2>
+    <button class="btn btn-default" (click)="loadLogs()">刷新</button>
+  </div>
+
+  <div class="card" *ngIf="loading">
+    <p>加载中...</p>
+  </div>
+
+  <div class="card" *ngIf="!loading && logs.length === 0">
+    <p style="text-align: center; color: #999;">暂无 Webhook 日志</p>
+  </div>
+
+  <div class="card" *ngIf="!loading && logs.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>表单 ID</th>
+          <th>提交 ID</th>
+          <th>URL</th>
+          <th>状态</th>
+          <th>重试次数</th>
+          <th>最后尝试</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs">
+          <td>{{ log.id }}</td>
+          <td>{{ log.formId }}</td>
+          <td>{{ log.submissionId }}</td>
+          <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ log.url }}">
+            {{ log.url }}
+          </td>
+          <td>
+            <span class="tag {{ getStatusClass(log.status) }}">
+              {{ getStatusText(log.status) }}
+            </span>
+          </td>
+          <td>{{ log.attempts }}</td>
+          <td>{{ log.lastAttemptAt | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+          <td>
+            <button class="btn btn-sm btn-default" (click)="replayLog(log)">重放</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

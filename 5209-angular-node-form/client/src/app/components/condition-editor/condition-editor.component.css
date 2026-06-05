@@ -1,0 +1,31 @@
+.condition-editor {
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #fafafa;
+}
+
+.condition-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.condition-children {
+  margin-top: 12px;
+  padding-left: 20px;
+  border-left: 2px solid #d9d9d9;
+}
+
+.condition-child {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.remove-child-btn {
+  margin-top: 6px;
+}

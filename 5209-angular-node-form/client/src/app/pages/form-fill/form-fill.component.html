@@ -1,0 +1,36 @@
+<div class="container">
+  <div style="display: flex; align-items: center; margin-bottom: 20px;">
+    <button class="btn btn-default" (click)="goBack()">← 返回列表</button>
+  </div>
+
+  <div class="card" *ngIf="loading">
+    <p>加载中...</p>
+  </div>
+
+  <div class="card" *ngIf="!loading && formConfig && !submitted">
+    <h2 style="margin-bottom: 8px;">{{ formConfig.name }}</h2>
+    <p style="color: #666; margin-bottom: 24px;">{{ formConfig.description }}</p>
+
+    <app-dynamic-form
+      *ngIf="formConfig.fields.length > 0"
+      [formConfig]="formConfig"
+      [initialData]="draftData"
+      (formSubmit)="onSubmit($event)"
+      #dynamicForm>
+    </app-dynamic-form>
+
+    <div style="display: flex; gap: 12px; margin-top: 20px;">
+      <button class="btn btn-default" (click)="saveDraft(dynamicForm?.formValue || {})">保存草稿</button>
+      <button class="btn btn-default" (click)="exportData(dynamicForm?.formValue || {})">导出 JSON</button>
+      <span *ngIf="showDraftSaved" style="color: #52c41a; font-size: 14px; align-self: center;">✓ 草稿已保存</span>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="submitted">
+    <div style="text-align: center; padding: 40px 0;">
+      <h2 style="color: #52c41a; margin-bottom: 12px;">✓ 提交成功</h2>
+      <p style="color: #666; margin-bottom: 24px;">感谢您的提交，提交编号：{{ submissionId }}</p>
+      <button class="btn btn-primary" (click)="submitted = false; loadForm();">再填一份</button>
+    </div>
+  </div>
+</div>

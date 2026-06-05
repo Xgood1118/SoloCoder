@@ -1,0 +1,49 @@
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>表单列表</h2>
+    <div style="display: flex; gap: 12px;">
+      <button class="btn btn-default" (click)="goToTemplates()">模板市场</button>
+      <button class="btn btn-primary" (click)="createForm()">+ 新建表单</button>
+    </div>
+  </div>
+
+  <div class="card" *ngIf="loading">
+    <p>加载中...</p>
+  </div>
+
+  <div class="card" *ngIf="!loading && forms.length === 0">
+    <p style="text-align: center; color: #999;">暂无表单，点击右上角按钮创建</p>
+  </div>
+
+  <div class="card" *ngIf="!loading && forms.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>表单名称</th>
+          <th>描述</th>
+          <th>提交数</th>
+          <th>版本</th>
+          <th>更新时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let form of forms">
+          <td><strong>{{ form.name }}</strong></td>
+          <td>{{ form.description || '-' }}</td>
+          <td><span class="tag">{{ form.submissionCount || 0 }}</span></td>
+          <td>v{{ form.version }}</td>
+          <td>{{ form.updatedAt | date:'yyyy-MM-dd HH:mm' }}</td>
+          <td>
+            <button class="btn btn-sm btn-default" (click)="viewForm(form.id!)">填写</button>
+            <button class="btn btn-sm btn-default" (click)="editForm(form.id!)">编辑</button>
+            <button class="btn btn-sm btn-default" (click)="viewSubmissions(form.id!)">提交记录</button>
+            <button class="btn btn-sm btn-default" (click)="exportJson(form)">导出</button>
+            <button class="btn btn-sm btn-default" (click)="copyForm(form.id!)">复制</button>
+            <button class="btn btn-sm btn-danger" (click)="deleteForm(form.id!)">删除</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
