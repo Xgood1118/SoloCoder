@@ -1,0 +1,85 @@
+{
+  "taskId": "r1-test",
+  "taskName": "R1 ETL smoke test",
+  "sourceConfig": {
+    "id": "src1",
+    "name": "mock-rest-source",
+    "type": "REST_API",
+    "host": "127.0.0.1",
+    "port": 8745,
+    "poolSize": 2,
+    "extraParams": {
+      "url": "http://127.0.0.1:8745/source"
+    }
+  },
+  "targetConfig": {
+    "id": "tgt1",
+    "name": "http://127.0.0.1:8745/target",
+    "type": "REST_API",
+    "host": "127.0.0.1",
+    "port": 8745,
+    "poolSize": 2,
+    "extraParams": {
+      "url": "http://127.0.0.1:8745/health"
+    }
+  },
+  "sourceQuery": "",
+  "fieldMappings": [
+    {
+      "id": "m1",
+      "sourceField": "id",
+      "targetField": "user_id",
+      "mappingType": "DIRECT",
+      "targetType": "string"
+    },
+    {
+      "id": "m2",
+      "sourceField": "name",
+      "targetField": "user_name",
+      "mappingType": "DIRECT",
+      "targetType": "string"
+    },
+    {
+      "id": "m3",
+      "sourceField": "city",
+      "targetField": "city",
+      "mappingType": "DIRECT",
+      "targetType": "string"
+    },
+    {
+      "id": "m4",
+      "sourceField": "age",
+      "targetField": "age",
+      "mappingType": "DIRECT",
+      "targetType": "int"
+    },
+    {
+      "id": "m5",
+      "sourceField": "note",
+      "targetField": "note",
+      "mappingType": "DIRECT",
+      "targetType": "string"
+    }
+  ],
+  "cleaningRules": [
+    {
+      "id": "c1",
+      "name": "trim-name",
+      "order": 1,
+      "conditionExpression": "field == 'user_name'",
+      "operationType": "TRIM",
+      "operationParams": {"field": "user_name"}
+    }
+  ],
+  "nullHandlingStrategies": [
+    {"targetField": "user_name", "strategy": "DEFAULT_VALUE", "defaultValue": "UNKNOWN"},
+    {"targetField": "city", "strategy": "DEFAULT_VALUE", "defaultValue": "N/A"}
+  ],
+  "truncationStrategies": [
+    {"targetField": "note", "maxLength": 20, "truncationType": "BACK", "truncationMarker": "..."}
+  ],
+  "batchSize": 100,
+  "memoryLimitMB": 256,
+  "skipOnError": true,
+  "sourceEncoding": "UTF-8"
+}

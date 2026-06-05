@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: wms-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wms_db
+      MYSQL_USER: wms
+      MYSQL_PASSWORD: wms123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./backend/src/main/resources/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - wms-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: wms-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      MYSQL_ROOT_PASSWORD: root
+      JWT_SECRET: warehouse-management-system-secret-key-for-jwt-token-generation-2024
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - wms-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: wms-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - wms-network
+
+volumes:
+  mysql-data:
+
+networks:
+  wms-network:
+    driver: bridge

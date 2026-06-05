@@ -1,0 +1,9 @@
+{
+  "name": "测试配置文件",
+  "version": "1.0",
+  "settings": {
+    "timeout": 30,
+    "retries": 3
+  },
+  "features": ["压缩", "加密", "备份"]
+}

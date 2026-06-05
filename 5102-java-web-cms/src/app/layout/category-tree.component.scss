@@ -1,0 +1,22 @@
+.category-tree {
+  padding: 16px;
+  .tree-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .tree-actions {
+      button {
+        padding: 0 4px;
+        font-size: 12px;
+      }
+    }
+  }
+}

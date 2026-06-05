@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: dev
+
+server:
+  port: 8120
+
+jwt:
+  secret: warehouse-management-system-secret-key-for-jwt-token-generation-2024
+  expiration: 86400000
+
+logging:
+  level:
+    com.wms: INFO

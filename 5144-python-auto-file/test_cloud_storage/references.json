@@ -1,0 +1,23 @@
+{
+  "/backups/documents/app.log": [
+    "documents_backup"
+  ],
+  "/backups/documents/file1.txt": [
+    "documents_backup"
+  ],
+  "/backups/documents/image.png": [
+    "documents_backup"
+  ],
+  "/backups/documents/config.json": [
+    "documents_backup"
+  ],
+  "/backups/documents/subdir/nested_file.txt": [
+    "documents_backup"
+  ],
+  "/backups/documents/a.txt": [
+    "documents_backup"
+  ],
+  "/backups/documents/b.txt": [
+    "documents_backup"
+  ]
+}

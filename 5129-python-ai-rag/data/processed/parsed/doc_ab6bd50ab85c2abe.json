@@ -1,0 +1,273 @@
+{
+  "document_id": "doc_ab6bd50ab85c2abe",
+  "file_path": "examples\\sample_document.md",
+  "file_name": "sample_document.md",
+  "file_type": "markdown",
+  "file_size": 3444,
+  "content_hash": "fa366ca74636fc5724ec8ba188168eea607c5f4db89e583c5725e13640096a30",
+  "parsed_at": "2026-06-03T09:14:05.530317Z",
+  "title": "sample_document",
+  "author": null,
+  "creation_date": null,
+  "total_pages": 1,
+  "elements": [
+    {
+      "type": "heading",
+      "content": "RAG 系统技术文档",
+      "metadata": {
+        "level": 1
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "heading",
+      "content": "概述",
+      "metadata": {
+        "level": 2
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "paragraph",
+      "content": "检索增强生成（Retrieval-Augmented Generation，RAG）是一种结合了信息检索和文本生成的 AI 技术框架。它通过从外部知识库中检索相关文档片段，然后将这些片段作为上下文提供给大语言模型，从而生成更准确、更相关的回答。",
+      "metadata": {},
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "heading",
+      "content": "核心功能",
+      "metadata": {
+        "level": 2
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "heading",
+      "content": "1. 文档解析",
+      "metadata": {
+        "level": 3
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "paragraph",
+      "content": "RAG 系统支持多种文档格式的解析：\n- PDF 文档：支持横排和竖排文字、表格、图表标题提取\n- Word 文档（.docx, .doc）：保留文档结构和格式\n- 纯文本文件（.txt）：支持多种编码自动检测\n- Markdown 文件（.md, .markdown）：解析标题、表格、代码块等元素",
+      "metadata": {},
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "heading",
+      "content": "2. 文本分块策略",
+      "metadata": {
+        "level": 3
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "paragraph",
+      "content": "分块策略是 RAG 系统的关键环节：\n- 可配置大小：默认 512 tokens，可根据需求调整\n- 句子边界保护：避免在句子中间切分，保持语义完整性\n- 重叠机制：相邻块之间有 50 tokens 的重叠，确保上下文连贯\n- 表格特殊处理：表格按行分组，表头重复出现在每个分块中",
+      "metadata": {},
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "heading",
+      "content": "3. Embedding 生成",
+      "metadata": {
+        "level": 3
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "paragraph",
+      "content": "系统支持两种 Embedding 方案：\n- OpenAI Embedding：使用 text-embedding-ada-002 模型，维度 1536\n- 本地 Embedding：使用 sentence-transformers，支持本地部署的模型",
+      "metadata": {},
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "heading",
+      "content": "4. 向量存储",
+      "metadata": {
+        "level": 3
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "paragraph",
+      "content": "支持两种向量数据库后端：\n- Chroma：轻量级本地向量数据库，适合开发和小规模部署\n- Milvus：高性能分布式向量数据库，适合生产环境大规模部署",
+      "metadata": {},
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "heading",
+      "content": "5. 重排序机制",
+      "metadata": {
+        "level": 3
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "paragraph",
+      "content": "使用 cross-encoder 模型进行两阶段检索：\n1. 粗排：向量检索召回 Top 50 结果\n2. 精排：cross-encoder 精细排序后返回 Top 5 结果",
+      "metadata": {},
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "heading",
+      "content": "6. 多文件协调",
+      "metadata": {
+        "level": 3
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "paragraph",
+      "content": "各模块通过中间文件传递数据：",
+      "metadata": {},
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "code",
+      "content": "原始文档 → 解析 JSON → 分块 JSON → 向量文件 → 向量数据库",
+      "metadata": {},
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "paragraph",
+      "content": "每个步骤可以独立运行，也可以串联执行。",
+      "metadata": {},
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "heading",
+      "content": "技术架构",
+      "metadata": {
+        "level": 2
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "code",
+      "content": "┌─────────────┐    ┌────────────┐    ┌───────────┐    ┌────────────┐\n│ 文档解析器  │ →  │ 文本分块器 │ →  │ Embedding │ →  │ 向量存储   │\n└─────────────┘    └────────────┘    └───────────┘    └────────────┘\n                                                          ↓\n┌─────────────┐    ┌────────────┐    ┌───────────┐    ┌────────────┐\n│  结果缓存   │ ←  │  重排序器  │ ←  │  检索器   │ ←  │   查询     │\n└─────────────┘    └────────────┘    └───────────┘    └────────────┘",
+      "metadata": {},
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "heading",
+      "content": "性能指标",
+      "metadata": {
+        "level": 2
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "table",
+      "content": "指标 | 数值 | 说明\n解析速度 | ~50 页/秒 | PDF 文档\n分块速度 | ~1000 块/秒 | 512 tokens/块\nEmbedding 速度 | ~100 块/秒 | OpenAI API\n检索延迟 | <100ms | Top 50 召回\n重排序延迟 | ~50ms | Top 5 精排",
+      "metadata": {
+        "num_rows": 5,
+        "num_columns": 3
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": null,
+      "rows": [
+        [
+          "解析速度",
+          "~50 页/秒",
+          "PDF 文档"
+        ],
+        [
+          "分块速度",
+          "~1000 块/秒",
+          "512 tokens/块"
+        ],
+        [
+          "Embedding 速度",
+          "~100 块/秒",
+          "OpenAI API"
+        ],
+        [
+          "检索延迟",
+          "<100ms",
+          "Top 50 召回"
+        ],
+        [
+          "重排序延迟",
+          "~50ms",
+          "Top 5 精排"
+        ]
+      ],
+      "headers": [
+        "指标",
+        "数值",
+        "说明"
+      ]
+    },
+    {
+      "type": "heading",
+      "content": "版本历史",
+      "metadata": {
+        "level": 2
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    },
+    {
+      "type": "heading",
+      "content": "v1.0.0 (2024-01-01)",
+      "metadata": {
+        "level": 3
+      },
+      "page_number": null,
+      "bounding_box": null,
+      "text_direction": "horizontal"
+    }
+  ],
+  "full_text": "RAG 系统技术文档\n\n概述\n\n检索增强生成（Retrieval-Augmented Generation，RAG）是一种结合了信息检索和文本生成的 AI 技术框架。它通过从外部知识库中检索相关文档片段，然后将这些片段作为上下文提供给大语言模型，从而生成更准确、更相关的回答。\n\n核心功能\n\n1. 文档解析\n\nRAG 系统支持多种文档格式的解析：\n- PDF 文档：支持横排和竖排文字、表格、图表标题提取\n- Word 文档（.docx, .doc）：保留文档结构和格式\n- 纯文本文件（.txt）：支持多种编码自动检测\n- Markdown 文件（.md, .markdown）：解析标题、表格、代码块等元素\n\n2. 文本分块策略\n\n分块策略是 RAG 系统的关键环节：\n- 可配置大小：默认 512 tokens，可根据需求调整\n- 句子边界保护：避免在句子中间切分，保持语义完整性\n- 重叠机制：相邻块之间有 50 tokens 的重叠，确保上下文连贯\n- 表格特殊处理：表格按行分组，表头重复出现在每个分块中\n\n3. Embedding 生成\n\n系统支持两种 Embedding 方案：\n- OpenAI Embedding：使用 text-embedding-ada-002 模型，维度 1536\n- 本地 Embedding：使用 sentence-transformers，支持本地部署的模型\n\n4. 向量存储\n\n支持两种向量数据库后端：\n- Chroma：轻量级本地向量数据库，适合开发和小规模部署\n- Milvus：高性能分布式向量数据库，适合生产环境大规模部署\n\n5. 重排序机制\n\n使用 cross-encoder 模型进行两阶段检索：\n1. 粗排：向量检索召回 Top 50 结果\n2. 精排：cross-encoder 精细排序后返回 Top 5 结果\n\n6. 多文件协调\n\n各模块通过中间文件传递数据：\n\n原始文档 → 解析 JSON → 分块 JSON → 向量文件 → 向量数据库\n\n每个步骤可以独立运行，也可以串联执行。\n\n技术架构\n\n┌─────────────┐    ┌────────────┐    ┌───────────┐    ┌────────────┐\n│ 文档解析器  │ →  │ 文本分块器 │ →  │ Embedding │ →  │ 向量存储   │\n└─────────────┘    └────────────┘    └───────────┘    └────────────┘\n                                                          ↓\n┌─────────────┐    ┌────────────┐    ┌───────────┐    ┌────────────┐\n│  结果缓存   │ ←  │  重排序器  │ ←  │  检索器   │ ←  │   查询     │\n└─────────────┘    └────────────┘    └───────────┘    └────────────┘\n\n性能指标\n\n指标 | 数值 | 说明\n解析速度 | ~50 页/秒 | PDF 文档\n分块速度 | ~1000 块/秒 | 512 tokens/块\nEmbedding 速度 | ~100 块/秒 | OpenAI API\n检索延迟 | <100ms | Top 50 召回\n重排序延迟 | ~50ms | Top 5 精排\n\n版本历史\n\nv1.0.0 (2024-01-01)",
+  "metadata": {
+    "hash_algorithm": "sha256",
+    "parser": "markdown+bs4"
+  }
+}

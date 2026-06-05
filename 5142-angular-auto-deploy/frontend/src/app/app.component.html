@@ -1,0 +1,39 @@
+<div class="app-layout">
+  <mat-sidenav-container>
+    <mat-sidenav #sidenav mode="side" opened class="sidebar">
+      <div class="sidebar-header">
+        <mat-icon class="logo-icon">hub</mat-icon>
+        <span class="logo-text">DeployPipe</span>
+      </div>
+
+      <mat-nav-list class="nav-list">
+        @for (item of navItems; track item.route) {
+          <a mat-list-item
+             [routerLink]="item.route"
+             routerLinkActive="active"
+             (click)="onNavClick(item.route)"
+             matTooltip="{{ item.label }}">
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            <span matListItemTitle>{{ item.label }}</span>
+          </a>
+        }
+      </mat-nav-list>
+
+      <div class="sidebar-footer">
+        @if (auth.isLoggedIn()) {
+          <div class="user-info">
+            <mat-icon>person</mat-icon>
+            <span>{{ auth.currentUser()?.username }}</span>
+          </div>
+          <button mat-icon-button (click)="logout()" matTooltip="退出登录">
+            <mat-icon>logout</mat-icon>
+          </button>
+        }
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="main-content">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

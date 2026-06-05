@@ -1,0 +1,79 @@
+.document-detail {
+  .page-header {
+    background: #fff;
+    margin-bottom: 16px;
+    border-radius: 8px;
+  }
+  .content-card {
+    margin-bottom: 16px;
+    .document-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .meta-left {
+        display: flex;
+        align-items: center;
+        .author-avatar {
+          margin-right: 12px;
+        }
+        .author-info {
+          .author-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+          }
+          .meta-info {
+            font-size: 12px;
+            color: #999;
+            .divider {
+              margin: 0 8px;
+            }
+          }
+        }
+      }
+      .meta-right {
+        .status-tag {
+          margin-right: 8px;
+        }
+      }
+    }
+    .document-tags {
+      margin-top: 16px;
+      .document-tag {
+        margin-right: 8px;
+        margin-bottom: 8px;
+      }
+    }
+    .document-content {
+      padding: 16px 0;
+      font-size: 14px;
+      line-height: 1.8;
+      ::ng-deep {
+        h1, h2, h3, h4, h5, h6 {
+          margin: 24px 0 16px;
+          font-weight: 600;
+        }
+        h1 { font-size: 28px; }
+        h2 { font-size: 24px; }
+        h3 { font-size: 20px; }
+        p {
+          margin: 16px 0;
+        }
+        img {
+          max-width: 100%;
+        }
+      }
+    }
+    .document-stats {
+      display: flex;
+      gap: 24px;
+      color: #999;
+      font-size: 14px;
+    }
+  }
+  .comments-card {
+    min-height: 300px;
+  }
+  .loading-container {
+    padding: 24px;
+  }
+}

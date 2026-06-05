@@ -1,0 +1,30 @@
+# 告警规则配置文件
+# 格式: 指标名|操作符|阈值|级别|持续周期|优先级
+# 操作符: >, <, =, !=, outside (区间外)
+# 级别: info, warning, critical 或 提示, 警告, 严重
+# 持续周期: 可选，默认为3个采集周期
+# 优先级: 可选，数字越大优先级越高
+
+# 系统指标告警规则
+cpu_usage_percent|>|80|warning|3|200
+cpu_usage_percent|>|95|critical|2|300
+
+memory_usage_percent|>|85|warning|3|200
+memory_usage_percent|>|95|critical|2|300
+
+disk_usage_percent|>|80|warning|5|150
+disk_usage_percent|>|90|critical|3|250
+
+load_average_1m|>|4|warning|3|100
+
+network_out_bytes_per_second|>|104857600|warning|5|80
+
+# 业务指标告警规则
+qps|<|10|warning|3|200
+qps|>|1000|warning|2|180
+
+request_latency_ms|>|500|warning|3|180
+request_latency_ms|>|2000|critical|2|280
+
+error_rate_percent|>|5|warning|2|190
+error_rate_percent|>|20|critical|1|290

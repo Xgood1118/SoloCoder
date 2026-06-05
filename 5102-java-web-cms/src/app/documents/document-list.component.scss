@@ -1,0 +1,56 @@
+.document-list {
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+  }
+  .filter-card {
+    margin-bottom: 16px;
+    .filter-form {
+      .filter-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        .search-input {
+          flex: 1;
+          max-width: 400px;
+        }
+      }
+      .filter-item {
+        margin: 0;
+        ::ng-deep .ant-form-item-label {
+          padding-bottom: 4px;
+        }
+        .filter-select {
+          width: 200px;
+        }
+      }
+      .filter-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+    }
+  }
+  .table-card {
+    .title-link {
+      color: #1890ff;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    .more-tags {
+      color: #999;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+  }
+}

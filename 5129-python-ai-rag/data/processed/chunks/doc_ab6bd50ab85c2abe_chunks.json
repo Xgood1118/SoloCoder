@@ -1,0 +1,412 @@
+{
+  "document_id": "doc_ab6bd50ab85c2abe",
+  "file_name": "sample_document.md",
+  "total_chunks": 24,
+  "chunks": [
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_0",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "RAG 系统技术文档",
+      "chunk_index": 0,
+      "start_position": 0,
+      "end_position": 10,
+      "token_count": 11,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 1,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "dfd3b33591318daa83eb680f4ca683195cd9215f5d8a83ef186862504adaed3e"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_1",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "概述",
+      "chunk_index": 1,
+      "start_position": 10,
+      "end_position": 12,
+      "token_count": 3,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 2,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "9a377ae82211e65af4c270eddd1e59a93a9ed9b76f236b74c4a44121f881bac4"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_2",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "检索增强生成（Retrieval-Augmented Generation，RAG）是一种结合了信息检索和文本生成的 AI 技术框架。 它通过从外部知识库中检索相关文档片段，然后将这些片段作为上下文提供给大语言模型，从而生成更准确、更相关的回答。",
+      "chunk_index": 2,
+      "start_position": 12,
+      "end_position": 135,
+      "token_count": 97,
+      "element_type": "paragraph",
+      "page_number": null,
+      "metadata": {
+        "text_direction": "horizontal"
+      },
+      "content_hash": "dbd82719bd3dcecc528c474866bd58952e54e4135ce9519c71aab4fba39f3a26"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_3",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "核心功能",
+      "chunk_index": 3,
+      "start_position": 134,
+      "end_position": 138,
+      "token_count": 3,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 2,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "d8eaa54e5c4d05b84d31ec006d2bbe5a2ce93216e9839e063e256b06a6b8bd36"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_4",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "1. 文档解析",
+      "chunk_index": 4,
+      "start_position": 138,
+      "end_position": 145,
+      "token_count": 7,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 3,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "c62b491f356f30138b65c60750c897221d5c0e0d988b17e0dc68e1df7b88ddd5"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_5",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "RAG 系统支持多种文档格式的解析：\n- PDF 文档：支持横排和竖排文字、表格、图表标题提取\n- Word 文档（. docx, . doc）：保留文档结构和格式\n- 纯文本文件（. txt）：支持多种编码自动检测\n- Markdown 文件（. md, . markdown）：解析标题、表格、代码块等元素",
+      "chunk_index": 5,
+      "start_position": 145,
+      "end_position": 300,
+      "token_count": 117,
+      "element_type": "paragraph",
+      "page_number": null,
+      "metadata": {
+        "text_direction": "horizontal"
+      },
+      "content_hash": "0877bdc2c8c79f665acecbd07c3f33b217b0dead881ec969c765d33a04ce69fe"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_6",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "2. 文本分块策略",
+      "chunk_index": 6,
+      "start_position": 295,
+      "end_position": 304,
+      "token_count": 11,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 3,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "35572d0b934402b8d8ac0b50cd3fd176e44c700c6660ccb8bad556094e5acd4c"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_7",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "分块策略是 RAG 系统的关键环节：\n- 可配置大小：默认 512 tokens，可根据需求调整\n- 句子边界保护：避免在句子中间切分，保持语义完整性\n- 重叠机制：相邻块之间有 50 tokens 的重叠，确保上下文连贯\n- 表格特殊处理：表格按行分组，表头重复出现在每个分块中",
+      "chunk_index": 7,
+      "start_position": 304,
+      "end_position": 444,
+      "token_count": 134,
+      "element_type": "paragraph",
+      "page_number": null,
+      "metadata": {
+        "text_direction": "horizontal"
+      },
+      "content_hash": "e6aa51fc16586972a968849e1b79584f218352175b1ba19801ca4e763e0cd5df"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_8",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "3. Embedding 生成",
+      "chunk_index": 8,
+      "start_position": 444,
+      "end_position": 459,
+      "token_count": 6,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 3,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "dcc33c932a74ee81eb99df7b38d03f30da36e5ca6442f60c81a816d2c58f15a7"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_9",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "系统支持两种 Embedding 方案：\n- OpenAI Embedding：使用 text-embedding-ada-002 模型，维度 1536\n- 本地 Embedding：使用 sentence-transformers，支持本地部署的模型",
+      "chunk_index": 9,
+      "start_position": 459,
+      "end_position": 585,
+      "token_count": 57,
+      "element_type": "paragraph",
+      "page_number": null,
+      "metadata": {
+        "text_direction": "horizontal"
+      },
+      "content_hash": "c24ad9c7a980314bf1fdd469887705b3239b68fac2cd5fbe870b6150c0937392"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_10",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "4. 向量存储",
+      "chunk_index": 10,
+      "start_position": 585,
+      "end_position": 592,
+      "token_count": 8,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 3,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "637758ecae68f1b3371b1cb6f9b2c88e255fc0678a89f87a447c7f59a06e572e"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_11",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "支持两种向量数据库后端：\n- Chroma：轻量级本地向量数据库，适合开发和小规模部署\n- Milvus：高性能分布式向量数据库，适合生产环境大规模部署",
+      "chunk_index": 11,
+      "start_position": 592,
+      "end_position": 668,
+      "token_count": 66,
+      "element_type": "paragraph",
+      "page_number": null,
+      "metadata": {
+        "text_direction": "horizontal"
+      },
+      "content_hash": "6e4e35fa72866a1c60c2c1f74085262ae1b2457bf77b90bb98a10ca6e41dbafa"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_12",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "5. 重排序机制",
+      "chunk_index": 12,
+      "start_position": 668,
+      "end_position": 676,
+      "token_count": 7,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 3,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "6e4c788dccfca94ca882e6d21b33ab601da846a192d7ea5a2f8fc2589473e500"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_13",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "使用 cross-encoder 模型进行两阶段检索：\n1. 粗排：向量检索召回 Top 50 结果\n2. 精排：cross-encoder 精细排序后返回 Top 5 结果",
+      "chunk_index": 13,
+      "start_position": 676,
+      "end_position": 763,
+      "token_count": 58,
+      "element_type": "paragraph",
+      "page_number": null,
+      "metadata": {
+        "text_direction": "horizontal"
+      },
+      "content_hash": "185222755bd147cb431ca78985080132d5fb1cd9b6b6621a95fcca2432aa63a2"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_14",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "6. 多文件协调",
+      "chunk_index": 14,
+      "start_position": 763,
+      "end_position": 771,
+      "token_count": 8,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 3,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "91237af2820701e8657ead96459e2e259c6da7c311dc428ca98bf990014821dc"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_15",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "各模块通过中间文件传递数据：",
+      "chunk_index": 15,
+      "start_position": 771,
+      "end_position": 785,
+      "token_count": 14,
+      "element_type": "paragraph",
+      "page_number": null,
+      "metadata": {
+        "text_direction": "horizontal"
+      },
+      "content_hash": "31d1a892dda08c1a5d7a682234e3ff70b968db7fc15d7caa91c94bc99f5af8f7"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_16",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "原始文档 → 解析 JSON → 分块 JSON → 向量文件 → 向量数据库",
+      "chunk_index": 16,
+      "start_position": 785,
+      "end_position": 824,
+      "token_count": 24,
+      "element_type": "code",
+      "page_number": null,
+      "metadata": {
+        "text_direction": "horizontal"
+      },
+      "content_hash": "aab695e9f0fc7d83d5515296f9ffe384182fad3ebccd47131e1b45f7b44a7a4a"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_17",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "每个步骤可以独立运行，也可以串联执行。",
+      "chunk_index": 17,
+      "start_position": 824,
+      "end_position": 843,
+      "token_count": 20,
+      "element_type": "paragraph",
+      "page_number": null,
+      "metadata": {
+        "text_direction": "horizontal"
+      },
+      "content_hash": "43f6b88beaca2388cb28210e75343aa09d1422cc84a047801ef8da703b11a354"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_18",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "技术架构",
+      "chunk_index": 18,
+      "start_position": 843,
+      "end_position": 847,
+      "token_count": 6,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 2,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "fefffed502a3ea843b155a682b50db583ef4b9b0f82aa3b6035dedcbb2dcc9db"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_19",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "┌─────────────┐    ┌────────────┐    ┌───────────┐    ┌────────────┐\n│ 文档解析器  │ →  │ 文本分块器 │ →  │ Embedding │ →  │ 向量存储   │\n└─────────────┘    └────────────┘    └───────────┘    └────────────┘\n                                                          ↓\n┌─────────────┐    ┌────────────┐    ┌───────────┐    ┌────────────┐\n│  结果缓存   │ ←  │  重排序器  │ ←  │  检索器   │ ←  │   查询     │\n└─────────────┘    └────────────┘    └───────────┘    └────────────┘",
+      "chunk_index": 19,
+      "start_position": 847,
+      "end_position": 1293,
+      "token_count": 197,
+      "element_type": "code",
+      "page_number": null,
+      "metadata": {
+        "text_direction": "horizontal"
+      },
+      "content_hash": "c41eccea9270849ab210d3107c37f4e588d09f2fb5cda193bd75ff12b7b498bd"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_20",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "性能指标",
+      "chunk_index": 20,
+      "start_position": 1293,
+      "end_position": 1297,
+      "token_count": 4,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 2,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "2875cd74c73d93e99d84156131a52b6732b40b2505deec067e1849c39104c0ab"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_21",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "指标 | 数值 | 说明\n解析速度 | ~50 页/秒 | PDF 文档\n分块速度 | ~1000 块/秒 | 512 tokens/块\nEmbedding 速度 | ~100 块/秒 | OpenAI API\n检索延迟 | <100ms | Top 50 召回\n重排序延迟 | ~50ms | Top 5 精排",
+      "chunk_index": 21,
+      "start_position": 1297,
+      "end_position": 1453,
+      "token_count": 102,
+      "element_type": "table",
+      "page_number": null,
+      "metadata": {
+        "num_rows": 5,
+        "num_columns": 3
+      },
+      "content_hash": "5f6d51c83c70783f8a520e226bb773280fc71aac630d2bf88a953b6120501d98"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_22",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "版本历史",
+      "chunk_index": 22,
+      "start_position": 1453,
+      "end_position": 1457,
+      "token_count": 4,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 2,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "bb58d709f19dedbfee7df2daac0722e4cac43ba4c8c19186e232f020b0de7042"
+    },
+    {
+      "chunk_id": "doc_ab6bd50ab85c2abe_chunk_23",
+      "document_id": "doc_ab6bd50ab85c2abe",
+      "document_name": "sample_document.md",
+      "content": "v1. 0. 0 (2024-01-01)",
+      "chunk_index": 23,
+      "start_position": 1457,
+      "end_position": 1478,
+      "token_count": 16,
+      "element_type": "heading",
+      "page_number": null,
+      "metadata": {
+        "level": 3,
+        "text_direction": "horizontal"
+      },
+      "content_hash": "111f46606f38c32fb38c3c12a82803f58d12e359254ebaed04b4fbdc0bff05ab"
+    }
+  ],
+  "chunked_at": "2026-06-03T09:14:57.722320Z",
+  "chunking_config": {
+    "chunk_size": 512,
+    "chunk_overlap": 50,
+    "respect_sentence_boundary": true,
+    "min_chunk_size": 100
+  }
+}

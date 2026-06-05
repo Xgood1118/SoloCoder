@@ -1,0 +1,41 @@
+global:
+  max_concurrent_tasks: 3
+  log_level: "INFO"
+  log_file: "backup.log"
+  fingerprint_db_path: "./fingerprints.db"
+
+tls:
+  version_preference: ["1.3", "1.2"]
+  verify_cert: true
+
+tasks:
+  - name: "documents_backup"
+    source_dir: "./test_data/documents"
+    target_path: "/backups/documents"
+    priority: 1
+    schedule: "0 2 * * *"
+    sync_mode: "incremental"
+    max_file_concurrency: 5
+
+    compression:
+      enabled: true
+      default_level: 6
+      max_file_size: 1073741824
+      strategies:
+        - extensions: [".log", ".txt", ".json"]
+          level: 9
+        - extensions: [".zip", ".jpg", ".jpeg", ".png", ".mp4", ".avi", ".pdf"]
+          level: 0
+
+    bandwidth_limit: 10
+
+    retention:
+      scope: "per_directory"
+      priority: ["count", "time", "size"]
+      max_versions: 10
+      retention_days: 30
+      max_total_size: 10737418240
+
+    cloud_storage:
+      provider: "local"
+      bucket: "./test_cloud_storage"

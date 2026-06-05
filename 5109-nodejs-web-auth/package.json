@@ -1,0 +1,29 @@
+{
+  "name": "5109-nodejs-web-auth",
+  "version": "1.0.0",
+  "description": "Internal system permission control module with JWT auth, RBAC, data scope, and security protections",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node app.js",
+    "init-db": "mysql -u root -p < sql/init.sql",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.22.4",
+    "xss": "^1.0.15"
+  }
+}

@@ -1,0 +1,176 @@
+@use '@angular/material' as mat;
+
+$bg-primary: #1a1d23;
+$bg-secondary: #22262e;
+$bg-card: #282c34;
+$bg-hover: #2f343e;
+$accent: #3b82f6;
+$accent-light: #60a5fa;
+$success: #22c55e;
+$warning: #f59e0b;
+$error: #ef4444;
+$text-primary: #e2e8f0;
+$text-secondary: #94a3b8;
+$text-muted: #64748b;
+$border-color: #363c48;
+
+@include mat.core();
+
+$my-primary: mat.define-palette(mat.$blue-palette, 600);
+$my-accent: mat.define-palette(mat.$green-palette, 500);
+$my-warn: mat.define-palette(mat.$red-palette, 500);
+
+$dark-theme: mat.define-dark-theme((
+  color: (
+    primary: $my-primary,
+    accent: $my-accent,
+    warn: $my-warn,
+  ),
+));
+
+@include mat.all-component-themes($dark-theme);
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background-color: $bg-primary;
+  color: $text-primary;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: $text-primary;
+}
+
+a {
+  color: $accent-light;
+  text-decoration: none;
+
+  &:hover {
+    color: $accent;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: $bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $text-muted;
+  border-radius: 3px;
+
+  &:hover {
+    background: $text-secondary;
+  }
+}
+
+.mat-mdc-card {
+  background-color: $bg-card !important;
+  border: 1px solid $border-color !important;
+  border-radius: 12px !important;
+}
+
+.mat-mdc-table {
+  background: transparent !important;
+}
+
+.mat-mdc-header-row {
+  background-color: $bg-secondary !important;
+}
+
+.mat-mdc-row {
+  &:hover {
+    background-color: $bg-hover !important;
+  }
+}
+
+.mat-mdc-form-field {
+  .mat-mdc-form-field-focus-overlay {
+    background-color: $bg-card !important;
+  }
+}
+
+.page-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.terminal-panel {
+  background-color: #0d1117;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  padding: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #c9d1d9;
+  overflow-y: auto;
+  max-height: 600px;
+  min-height: 400px;
+  position: relative;
+
+  .log-line {
+    white-space: pre-wrap;
+    word-break: break-all;
+
+    &.new-line {
+      animation: fadeIn 0.3s ease;
+    }
+  }
+
+  .log-line-error {
+    color: $error;
+  }
+
+  .log-line-warning {
+    color: $warning;
+  }
+
+  .log-line-success {
+    color: $success;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.status-queued { color: $text-secondary; }
+.status-building, .status-deploying, .status-rolling_back, .status-executing { color: $accent; }
+.status-success, .status-completed, .status-approved { color: $success; }
+.status-failed, .status-rejected { color: $error; }
+.status-pending, .status-pending_approval, .status-waiting_prerequisite { color: $warning; }

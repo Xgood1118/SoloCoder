@@ -1,0 +1,78 @@
+# RAG System Configuration
+
+# Logging
+log_level: INFO
+
+# Path Configuration
+paths:
+  input_dir: data/input
+  parsed_dir: data/processed/parsed
+  chunks_dir: data/processed/chunks
+  embeddings_dir: data/processed/embeddings
+  vector_store_dir: data/vector_store
+  cache_dir: data/cache
+  versions_dir: data/versions
+
+# Chunking Configuration
+chunking:
+  chunk_size: 512
+  chunk_overlap: 50
+  separators:
+    - "\n\n"
+    - "\n"
+    - "."
+    - "!"
+    - "?"
+    - ";"
+    - "，"
+    - "。"
+    - "！"
+    - "？"
+    - " "
+  respect_sentence_boundary: true
+  min_chunk_size: 100
+
+# Embedding Configuration
+embedding:
+  provider: openai  # "openai" or "local"
+  model_name: text-embedding-ada-002
+  api_key: null  # Set via OPENAI_API_KEY environment variable
+  base_url: null  # Set via OPENAI_BASE_URL environment variable
+  batch_size: 32
+  max_retries: 3
+  local_model_path: null  # Path to local model if using provider: local
+  dimension: 1536
+
+# Vector Store Configuration
+vector_store:
+  backend: chroma  # "chroma" or "milvus"
+  collection_name: rag_documents
+  persist_directory: data/vector_store/chroma  # For Chroma
+  host: localhost  # For Milvus
+  port: 19530  # For Milvus
+  metric_type: COSINE
+  index_type: HNSW
+
+# Reranker Configuration
+reranker:
+  enabled: true
+  model_name: cross-encoder/ms-marco-MiniLM-L-6-v2
+  top_k: 50  # Number of results to rerank
+  top_n: 5   # Number of results to return
+  device: cpu
+  max_length: 512
+
+# Cache Configuration
+cache:
+  enabled: true
+  ttl_seconds: 3600
+  max_entries: 1000
+  backend: disk
+  invalidate_on_update: true
+
+# Versioning Configuration
+versioning:
+  enabled: true
+  max_versions: 10
+  default_retrieve_latest: true
+  hash_algorithm: sha256

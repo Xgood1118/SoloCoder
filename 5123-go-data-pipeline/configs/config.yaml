@@ -1,0 +1,31 @@
+server:
+  port: 8123
+  mode: debug
+
+database:
+  driver: sqlite
+  dsn: ./log_pipeline.db
+
+log:
+  level: debug
+  filepath: ./logs/app.log
+
+datasource:
+  worker_pool_size: 10
+  channel_buffer_size: 1000
+
+pipeline:
+  worker_pool_size: 20
+  channel_buffer_size: 2000
+
+alert:
+  check_interval: 10s
+  email_smtp_host: smtp.example.com
+  email_smtp_port: 587
+  email_username: alerts@example.com
+  email_password: password
+  email_from: alerts@example.com
+
+monitor:
+  metric_interval: 5s
+  retention_days: 7

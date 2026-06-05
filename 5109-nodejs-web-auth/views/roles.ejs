@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>角色管理 - 内部运营系统</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+  <div class="layout-wrapper">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <i class="bi bi-shield-lock me-2"></i>运营系统
+      </div>
+      <ul class="nav flex-column" id="sidebar-menu"></ul>
+    </aside>
+    <div class="main-content">
+      <div class="topbar">
+        <h1><i class="bi bi-person-badge me-2"></i>角色管理</h1>
+        <div class="user-section">
+          <div id="user-info"></div>
+          <a href="#" id="logout-btn" class="btn-logout">
+            <i class="bi bi-box-arrow-right me-1"></i>退出
+          </a>
+        </div>
+      </div>
+
+      <div class="alert-box alert-box-warning">
+        <i class="bi bi-exclamation-triangle fs-5"></i>
+        <div>
+          <strong>XSS 风险提示</strong>：角色名称支持用户自定义，为了防止 XSS 攻击，
+          系统在入库前会使用 <code>xss()</code> 函数对输入进行转义，
+          前端渲染时也会进行二次转义。可尝试输入 <code>&lt;script&gt;alert(1)&lt;/script&gt;</code> 测试防护效果。
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="mb-0">角色列表</h3>
+          <button class="btn btn-success" onclick="openAddModal()">
+            <i class="bi bi-plus-lg me-1"></i>新增角色
+          </button>
+        </div>
+
+        <div id="alert-area"></div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>角色名称</th>
+              <th>描述</th>
+              <th>数据权限</th>
+              <th>创建时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="role-table-body">
+            <tr><td colspan="6" class="text-center py-4 text-muted">加载中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="modal fade" id="roleModal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modal-title">新增角色</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="edit-id">
+              <div class="mb-3">
+                <label class="form-label">角色名称</label>
+                <input type="text" class="form-control" id="edit-name" placeholder="请输入角色名称">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">描述</label>
+                <textarea class="form-control" id="edit-description" rows="2" placeholder="请输入角色描述"></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">数据权限范围</label>
+                <select class="form-control" id="edit-data-scope">
+                  <option value="self">仅自己</option>
+                  <option value="team">本团队</option>
+                  <option value="all">全部</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+              <button type="button" class="btn btn-primary" onclick="saveRole()">保存</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="menuModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">分配菜单权限 - <span id="menu-role-name"></span></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div class="alert alert-info mb-3">
+                <i class="bi bi-info-circle me-2"></i>
+                勾选该角色可以访问的菜单项，子菜单需要父菜单权限才能正常显示
+              </div>
+              <div id="menu-tree"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+              <button type="button" class="btn btn-primary" onclick="saveMenuAssign()">保存分配</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    let roles = [];
+    let allMenus = [];
+    let currentRoleId = null;
+    let roleModal, menuModal;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      roleModal = new bootstrap.Modal(document.getElementById('roleModal'));
+      menuModal = new bootstrap.Modal(document.getElementById('menuModal'));
+      loadData();
+    });
+
+    async function loadData() {
+      roles = await API.getRoles() || [];
+      allMenus = await API.getAllMenus() || [];
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('role-table-body');
+      if (roles.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">暂无数据</td></tr>';
+        return;
+      }
+
+      const scopeLabels = {
+        'all': '<span class="data-scope-badge scope-all">全部</span>',
+        'team': '<span class="data-scope-badge scope-team">团队</span>',
+        'self': '<span class="data-scope-badge scope-self">个人</span>'
+      };
+
+      tbody.innerHTML = roles.map(r => `
+        <tr>
+          <td><span class="badge bg-secondary">${r.id}</span></td>
+          <td>${escapeHtml(r.name)}</td>
+          <td>${escapeHtml(r.description || '-')}</td>
+          <td>${scopeLabels[r.data_scope] || r.data_scope}</td>
+          <td>${new Date(r.created_at).toLocaleString()}</td>
+          <td>
+            <button class="btn btn-sm btn-info" onclick="assignMenus(${r.id}, '${escapeHtml(r.name).replace(/'/g, "\\'")}')">分配菜单</button>
+            <button class="btn btn-sm btn-primary" onclick="editRole(${r.id})">编辑</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteRole(${r.id})">删除</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openAddModal() {
+      document.getElementById('modal-title').textContent = '新增角色';
+      document.getElementById('edit-id').value = '';
+      document.getElementById('edit-name').value = '';
+      document.getElementById('edit-description').value = '';
+      document.getElementById('edit-data-scope').value = 'self';
+      roleModal.show();
+    }
+
+    function editRole(id) {
+      const role = roles.find(r => r.id === id);
+      if (!role) return;
+
+      document.getElementById('modal-title').textContent = '编辑角色';
+      document.getElementById('edit-id').value = role.id;
+      document.getElementById('edit-name').value = role.name;
+      document.getElementById('edit-description').value = role.description || '';
+      document.getElementById('edit-data-scope').value = role.data_scope;
+      roleModal.show();
+    }
+
+    async function saveRole() {
+      const id = document.getElementById('edit-id').value;
+      const data = {
+        name: document.getElementById('edit-name').value.trim(),
+        description: document.getElementById('edit-description').value.trim(),
+        data_scope: document.getElementById('edit-data-scope').value
+      };
+
+      if (!data.name) {
+        showAlert('角色名称不能为空', 'warning');
+        return;
+      }
+
+      let result;
+      if (id) {
+        const res = await API.request(`/api/roles/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify(data)
+        });
+        result = res ? await res.json() : null;
+      } else {
+        const res = await API.request('/api/roles', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+        result = res ? await res.json() : null;
+      }
+
+      if (result) {
+        showAlert(result.message, result.error ? 'danger' : 'success');
+        if (!result.error) {
+          roleModal.hide();
+          loadData();
+        }
+      }
+    }
+
+    async function deleteRole(id) {
+      if (!confirm('确定要删除该角色吗？删除后相关用户将失去角色关联。')) return;
+
+      const res = await API.request(`/api/roles/${id}`, { method: 'DELETE' });
+      const result = res ? await res.json() : null;
+
+      if (result) {
+        showAlert(result.message, 'success');
+        loadData();
+      }
+    }
+
+    async function assignMenus(roleId, roleName) {
+      currentRoleId = roleId;
+      document.getElementById('menu-role-name').textContent = roleName;
+
+      const res = await API.request(`/api/roles/${roleId}/menus`);
+      const roleMenus = res ? await res.json() : [];
+      const roleMenuIds = new Set(roleMenus.map(m => m.id));
+
+      const tree = buildMenuTree(allMenus, 0, roleMenuIds);
+      document.getElementById('menu-tree').innerHTML = tree;
+      menuModal.show();
+    }
+
+    function buildMenuTree(menus, parentId, checkedIds) {
+      const items = menus.filter(m => m.parent_id === parentId);
+      if (items.length === 0) return '';
+
+      return items.map(m => `
+        <div class="mb-2 ms-${parentId > 0 ? '4' : '0'}">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="${m.id}" id="menu-${m.id}" ${checkedIds.has(m.id) ? 'checked' : ''}>
+            <label class="form-check-label" for="menu-${m.id}">
+              <i class="bi bi-${m.icon || 'circle'} me-1"></i>${escapeHtml(m.name)}
+            </label>
+          </div>
+          ${buildMenuTree(menus, m.id, checkedIds)}
+        </div>
+      `).join('');
+    }
+
+    async function saveMenuAssign() {
+      const checkedBoxes = document.querySelectorAll('#menu-tree input[type="checkbox"]:checked');
+      const menuIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
+
+      const res = await API.request(`/api/roles/${currentRoleId}/menus`, {
+        method: 'POST',
+        body: JSON.stringify({ menuIds })
+      });
+      const result = res ? await res.json() : null;
+
+      if (result) {
+        showAlert(result.message, 'success');
+        menuModal.hide();
+      }
+    }
+
+    function showAlert(message, type) {
+      const alertArea = document.getElementById('alert-area');
+      alertArea.innerHTML = `
+        <div class="alert-box alert-box-${type}">
+          <i class="bi bi-${type === 'success' ? 'check-circle' : 'x-circle'} fs-5"></i>
+          <div>${message}</div>
+        </div>
+      `;
+      setTimeout(() => { alertArea.innerHTML = ''; }, 5000);
+    }
+  </script>
+</body>
+</html>

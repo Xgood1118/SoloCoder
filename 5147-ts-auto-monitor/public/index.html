@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>监控告警平台</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.header{background:linear-gradient(135deg,#1e293b,#0f172a);border-bottom:1px solid #334155;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:20px;font-weight:600;color:#f8fafc}
+.header .status{display:flex;gap:12px;align-items:center}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.status-dot.ok{background:#22c55e;box-shadow:0 0 6px #22c55e}
+.status-dot.warn{background:#eab308;box-shadow:0 0 6px #eab308}
+.status-dot.err{background:#ef4444;box-shadow:0 0 6px #ef4444}
+.container{max-width:1400px;margin:0 auto;padding:20px}
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:#1e293b;border-radius:8px;padding:4px}
+.tab{padding:8px 20px;border-radius:6px;cursor:pointer;font-size:14px;color:#94a3b8;transition:all .2s;border:none;background:none}
+.tab:hover{color:#e2e8f0}
+.tab.active{background:#3b82f6;color:#fff}
+.panel{display:none}
+.panel.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:20px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;transition:transform .15s}
+.card:hover{transform:translateY(-2px)}
+.card .label{font-size:12px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.card .value{font-size:28px;font-weight:700;color:#f8fafc}
+.card .unit{font-size:14px;color:#64748b;margin-left:4px}
+.card.warn{border-color:#eab308}
+.card.critical{border-color:#ef4444}
+.chart-container{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:20px;margin-bottom:20px}
+.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.chart-header h3{font-size:14px;color:#e2e8f0}
+.chart-header select{background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;padding:4px 8px;font-size:12px}
+.chart-wrap{height:260px;position:relative}
+.table-wrap{background:#1e293b;border:1px solid #334155;border-radius:10px;overflow:hidden}
+.table-wrap table{width:100%;border-collapse:collapse}
+.table-wrap th{text-align:left;padding:12px 16px;font-size:12px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;background:#0f172a;border-bottom:1px solid #334155}
+.table-wrap td{padding:10px 16px;font-size:13px;border-bottom:1px solid #1e293b}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.badge.info{background:#3b82f620;color:#60a5fa}
+.badge.warning{background:#eab30820;color:#facc15}
+.badge.critical{background:#ef444420;color:#f87171}
+.badge.triggered{background:#ef444420;color:#f87171}
+.badge.resolved{background:#22c55e20;color:#4ade80}
+.refresh-bar{display:flex;align-items:center;gap:8px;font-size:12px;color:#64748b}
+.refresh-bar button{background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:4px 12px;font-size:12px;cursor:pointer}
+.refresh-bar button:hover{background:#2563eb}
+.empty{text-align:center;padding:40px;color:#64748b;font-size:14px}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>&#x1F4CA; 监控告警平台</h1>
+  <div class="status">
+    <span class="refresh-bar">
+      <span id="lastUpdate">-</span>
+      <button onclick="refreshAll()">刷新</button>
+    </span>
+    <span class="status-dot ok" id="statusDot"></span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('dashboard')">实时仪表盘</button>
+    <button class="tab" onclick="switchTab('trends')">历史趋势</button>
+    <button class="tab" onclick="switchTab('alerts')">告警中心</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="panel active" id="panel-dashboard">
+    <div class="grid" id="metricsCards"></div>
+    <div class="chart-container">
+      <div class="chart-header">
+        <h3>实时指标</h3>
+        <select id="dashboardMetricSelect" onchange="updateDashboardChart()"></select>
+      </div>
+      <div class="chart-wrap"><canvas id="dashboardChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Trends -->
+  <div class="panel" id="panel-trends">
+    <div class="chart-container">
+      <div class="chart-header">
+        <h3>历史趋势</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select id="trendMetricSelect"></select>
+          <select id="trendRangeSelect">
+            <option value="3600000">最近1小时</option>
+            <option value="21600000">最近6小时</option>
+            <option value="86400000" selected>最近24小时</option>
+            <option value="604800000">最近7天</option>
+          </select>
+          <select id="trendLevelSelect">
+            <option value="raw">原始</option>
+            <option value="1m">1分钟</option>
+            <option value="5m">5分钟</option>
+            <option value="1h">1小时</option>
+          </select>
+          <button onclick="loadTrend()" style="background:#3b82f6;color:#fff;border:none;border-radius:6px;padding:4px 12px;font-size:12px;cursor:pointer">查询</button>
+        </div>
+      </div>
+      <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div class="panel" id="panel-alerts">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>状态</th><th>指标</th><th>级别</th><th>当前值</th><th>阈值</th><th>触发时间</th><th>标签</th></tr></thead>
+        <tbody id="alertsBody"></tbody>
+      </table>
+    </div>
+    <h3 style="margin:20px 0 10px;font-size:14px;color:#94a3b8">告警规则</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>指标</th><th>操作符</th><th>警告阈值</th><th>严重阈值</th><th>级别</th><th>持续周期</th><th>优先级</th><th>状态</th></tr></thead>
+        <tbody id="rulesBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let dashboardChart = null;
+let trendChart = null;
+let liveBuffer = {};
+let liveLabels = [];
+const MAX_LIVE_POINTS = 60;
+const OP_MAP = {gt:'>',lt:'<',eq:'=',ne:'!=',outside:'区间外'};
+
+async function api(path) {
+  const r = await fetch(API + path);
+  return r.json();
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'trends') loadTrend();
+  if (name === 'alerts') loadAlerts();
+}
+
+function fmtVal(v, name) {
+  if (name.includes('percent')) return v.toFixed(1) + '%';
+  if (name.includes('bytes')) return (v / 1073741824).toFixed(2) + ' GB';
+  if (name.includes('per_second')) return (v / 1048576).toFixed(2) + ' MB/s';
+  if (name.includes('ms')) return v.toFixed(0) + ' ms';
+  return v.toFixed(2);
+}
+
+function fmtTime(ts) {
+  return new Date(ts).toLocaleString('zh-CN');
+}
+
+async function refreshAll() {
+  try {
+    const status = await api('/api/status');
+    const dot = document.getElementById('statusDot');
+    dot.className = 'status-dot ' + (status.isRunning ? 'ok' : 'err');
+
+    const names = await api('/api/metrics/names');
+    updateSelects(names.names || []);
+
+    const now = Date.now();
+    const start = now - 3600000;
+    let cardsData = {};
+    for (const n of (names.names || [])) {
+      const q = await api('/api/metrics/query?name=' + encodeURIComponent(n) + '&start=' + start + '&end=' + now);
+      if (q.data && q.data.length > 0) {
+        const lastSeries = q.data[q.data.length - 1];
+        if (lastSeries.data && lastSeries.data.length > 0) {
+          const last = lastSeries.data[lastSeries.data.length - 1];
+          cardsData[n] = last.value;
+          if (!liveBuffer[n]) liveBuffer[n] = [];
+          liveBuffer[n].push({ t: last.timestamp, v: last.value });
+          if (liveBuffer[n].length > MAX_LIVE_POINTS) liveBuffer[n].shift();
+        }
+      }
+    }
+    renderCards(cardsData);
+    updateDashboardChart();
+
+    document.getElementById('lastUpdate').textContent = '更新: ' + new Date().toLocaleTimeString('zh-CN');
+  } catch (e) {
+    console.error(e);
+    document.getElementById('statusDot').className = 'status-dot err';
+  }
+}
+
+function updateSelects(names) {
+  const dashSel = document.getElementById('dashboardMetricSelect');
+  const trendSel = document.getElementById('trendMetricSelect');
+  const prevDash = dashSel.value;
+  const prevTrend = trendSel.value;
+  dashSel.innerHTML = names.map(n => '<option value="'+n+'">'+n+'</option>').join('');
+  trendSel.innerHTML = names.map(n => '<option value="'+n+'">'+n+'</option>').join('');
+  if (prevDash && names.includes(prevDash)) dashSel.value = prevDash;
+  if (prevTrend && names.includes(prevTrend)) trendSel.value = prevTrend;
+}
+
+function renderCards(data) {
+  const el = document.getElementById('metricsCards');
+  el.innerHTML = Object.entries(data).map(([name, value]) => {
+    let cls = '';
+    if (name.includes('cpu') && value > 80) cls = 'warn';
+    if (name.includes('cpu') && value > 95) cls = 'critical';
+    if (name.includes('memory') && value > 85) cls = 'warn';
+    if (name.includes('memory') && value > 95) cls = 'critical';
+    if (name.includes('disk') && value > 80) cls = 'warn';
+    if (name.includes('disk') && value > 90) cls = 'critical';
+    return '<div class="card '+cls+'"><div class="label">'+name+'</div><div class="value">'+fmtVal(value, name)+'</div></div>';
+  }).join('');
+}
+
+function updateDashboardChart() {
+  const metric = document.getElementById('dashboardMetricSelect').value;
+  if (!metric || !liveBuffer[metric]) return;
+  const data = liveBuffer[metric];
+  const labels = data.map(d => new Date(d.t).toLocaleTimeString('zh-CN'));
+  const values = data.map(d => d.v);
+
+  if (dashboardChart) dashboardChart.destroy();
+  dashboardChart = new Chart(document.getElementById('dashboardChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: metric,
+        data: values,
+        borderColor: '#3b82f6',
+        backgroundColor: '#3b82f620',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 1,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#94a3b8' } } },
+      scales: {
+        x: { ticks: { color: '#64748b', maxTicksLimit: 10 }, grid: { color: '#1e293b' } },
+        y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } }
+      }
+    }
+  });
+}
+
+async function loadTrend() {
+  const metric = document.getElementById('trendMetricSelect').value;
+  if (!metric) return;
+  const range = parseInt(document.getElementById('trendRangeSelect').value);
+  const level = document.getElementById('trendLevelSelect').value;
+  const now = Date.now();
+  const q = await api('/api/metrics/query?name=' + encodeURIComponent(metric) + '&start=' + (now - range) + '&end=' + now + '&level=' + level);
+
+  if (!q.data || q.data.length === 0) {
+    if (trendChart) trendChart.destroy();
+    return;
+  }
+
+  const series = q.data[0];
+  const labels = series.data.map(d => new Date(d.timestamp).toLocaleString('zh-CN'));
+  const values = series.data.map(d => d.value);
+
+  const colors = ['#3b82f6','#8b5cf6','#06b6d4','#f59e0b','#ef4444','#22c55e'];
+  const datasets = q.data.map((s, i) => ({
+    label: Object.entries(s.labels).map(([k,v])=>k+'='+v).join(', ') || metric,
+    data: s.data.map(d => d.value),
+    borderColor: colors[i % colors.length],
+    backgroundColor: colors[i % colors.length] + '20',
+    fill: false,
+    tension: 0.3,
+    pointRadius: 1,
+  }));
+
+  const allLabels = q.data[0].data.map(d => new Date(d.timestamp).toLocaleString('zh-CN'));
+
+  if (trendChart) trendChart.destroy();
+  trendChart = new Chart(document.getElementById('trendChart'), {
+    type: 'line',
+    data: { labels: allLabels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#94a3b8' } } },
+      scales: {
+        x: { ticks: { color: '#64748b', maxTicksLimit: 12 }, grid: { color: '#1e293b' } },
+        y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } }
+      }
+    }
+  });
+}
+
+async function loadAlerts() {
+  const alerts = await api('/api/alerts/active');
+  const body = document.getElementById('alertsBody');
+  if (!alerts.alerts || alerts.alerts.length === 0) {
+    body.innerHTML = '<tr><td colspan="7" class="empty">暂无活跃告警</td></tr>';
+  } else {
+    body.innerHTML = alerts.alerts.map(a =>
+      '<tr><td><span class="badge triggered">触发中</span></td><td>'+a.metricName+'</td><td><span class="badge '+a.level+'">'+a.level+'</span></td><td>'+a.value.toFixed(2)+'</td><td>'+a.threshold.toFixed(2)+'</td><td>'+fmtTime(a.triggeredAt)+'</td><td>'+Object.entries(a.labels).map(([k,v])=>k+'='+v).join(', ')+'</td></tr>'
+    ).join('');
+  }
+
+  const rules = await api('/api/alerts/rules');
+  const rbody = document.getElementById('rulesBody');
+  if (!rules.rules || rules.rules.length === 0) {
+    rbody.innerHTML = '<tr><td colspan="8" class="empty">暂无告警规则</td></tr>';
+  } else {
+    rbody.innerHTML = rules.rules.map(r =>
+      '<tr><td>'+r.metricName+'</td><td>'+(OP_MAP[r.operator]||r.operator)+'</td><td>'+r.thresholds.warning+'</td><td>'+r.thresholds.critical+'</td><td><span class="badge '+r.level+'">'+r.level+'</span></td><td>'+r.duration+'</td><td>'+r.priority+'</td><td>'+(r.enabled?'<span class="badge info">启用</span>':'<span class="badge warning">禁用</span>')+'</td></tr>'
+    ).join('');
+  }
+}
+
+refreshAll();
+setInterval(refreshAll, 15000);
+</script>
+</body>
+</html>
